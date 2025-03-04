@@ -48,7 +48,7 @@ void affiche_plateau(plateau * p){
 
   /* ligne du dessus */
   printf("   ");
-  for(i = 0 ; i < p -> n*2 ; i++){
+  for(i = 0 ; i <= p -> n*2 ; i++){
     printf("-");
   }
   printf("\n");
