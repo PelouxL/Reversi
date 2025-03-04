@@ -1,13 +1,34 @@
+#include <stdlib.h>
+#include <stdio.h>
+
 #ifndef _PLATEAU_H_
 #define _PLATEAU_H_
 
-/* creation du plateau */
-plateau * initialisation_plateau(int n);
+#define VIDE 0
+#define NOIR 1
+#define BLANC 2
 
-void affiche_plateau( plateau * p);
+typedef struct{
+  int **mat; /* matrice carre ? */
+  int n;
+}plateau;
 
-void inserer_pions( plateau * p, int i, int j, int couleur);
+typedef struct{
+  int x;
+  int y;
+}cellule;
 
-void vider_plateau( plateau *p):
+typedef struct{
+  int j_couleur;
+  int ordi_cordi;
+}couleur_j;
+
+plateau *initialisation_plateau(int n);
+
+void affiche_plateau(plateau *p);
+
+void inserer_pions(plateau *p, int i, int j, int couleur);
+
+void vider_plateau(plateau *p);
 
 #endif
