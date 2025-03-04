@@ -44,13 +44,42 @@ void vider_plateau( plateau *p){
 
 void affiche_plateau(plateau * p){
   int i, j;
+  char tab[8] ={'A','B','C','D','E','F','G','H'};
 
-  for( i = 0 ; i < p -> n ; i++ ){
-    for( j = 0 ; j < p -> n ; j++){
-      printf("%d ", p -> mat[i][j]);
-    }
-    printf("\n");
+  /* ligne du dessus */
+  printf("   ");
+  for(i = 0 ; i < p -> n*2 ; i++){
+    printf("-");
   }
+  printf("\n");
+
+  /* affichage des cases du plateau */
+  for( i = 0 ; i < p -> n ; i++ ){
+    printf("%d | ",i + 1); /* affichage des entiers des coordonne des cases */
+    for( j = 0 ; j < p -> n ; j++){
+      if( p -> mat[i][j] == 0){
+	printf(". ");
+      }if( p -> mat[i][j] == 1){
+	printf("N ");
+      }if( p -> mat[i][j] == 2){
+	printf("B ");
+      }
+    }
+    printf("|\n");
+    
+  }
+
+  /* affichage de la ligne du dessous */
+  printf("   ");
+  for( i = 0 ; i <= p -> n * 2 ; i++ ){
+    printf("-");
+  }
+  /* affichage des lettre pour les coordonnees des cases */
+  printf("\n    ");
+  for(i = 0 ; i < p -> n; i++){
+    printf("%c ", tab[i]);
+  }  
+  printf("\n");
 }
 
 
@@ -65,6 +94,7 @@ int main(){
 
   p = initialisation_plateau(i);
   inserer_pions(p, 4, 4, 1);
+  inserer_pions(p, 5, 4, 2);
   affiche_plateau(p);
   printf("une fois afficher, on efface en memoire \n");
   vider_plateau(p);
