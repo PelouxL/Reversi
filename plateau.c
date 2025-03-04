@@ -1,4 +1,5 @@
 #include "plateau.h"
+#include "jeu.h"
 
 plateau * initialisation_plateau(int n){
   plateau *p = NULL;
@@ -99,16 +100,27 @@ void affiche_plateau(plateau *p){
 void inserer_pions(plateau *p, int i, int j, int couleur){
   p -> mat[i][j] = couleur;
 }
-  
+/*
 int main(){
   int n = 8;
   plateau *p = NULL;
-
+  cellule *c = NULL;
+  
   p = initialisation_plateau(n);
   inserer_pions(p, 4, 4, 1);
   inserer_pions(p, 5, 4, 2);
+  affiche_plateau(p);
+  
+  c = ini_tab(2);
+  c[0].x = 3;
+  c[0].y = 1;
+  c[1].x = 4;
+  c[1].y = 1;
+
+  retourner_pieces(p, c, 2, NOIR);
   affiche_plateau(p);
   printf("une fois afficher, on efface en memoire \n");
   vider_plateau(p);
   exit(EXIT_SUCCESS);
 }
+*/
