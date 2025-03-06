@@ -1,5 +1,8 @@
+#include <stdlib.h>
+#include <stdio.h>
 #include "plateau.h"
 #include "jeu.h"
+#include "types.h"
 
 plateau * initialisation_plateau(int n){
   plateau *p = NULL;

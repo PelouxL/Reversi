@@ -1,4 +1,7 @@
+#include <stdlib.h>
+#include <stdio.h>
 #include "plateau.h"
+#include "types.h"
 
 void retourner_pieces(plateau *p, cellule *t_coordonnees, int taille, int couleur){
     int i, x, y;
@@ -19,7 +22,7 @@ cellule * ini_tab(int n){
 }
 
 
-void couleur_adverse(int couleur){
+int couleur_adverse(int couleur){
     if(couleur == NOIR){
         return BLANC;
     }

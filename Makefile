@@ -1,8 +1,20 @@
-cc = gcc
-C_FLAGS = -W -Wall -std=c89 -pedantic -O2
-EXEC_FILES =
+CC = gcc
+OPTION = -W -Wall -std=c89 -pedantic -O2
 
-all :
+main: main.o plateau.o jeu.o mlv.o
+	$(CC) $(OPTION) `pkg-config --cflags MLV` `pkg-config --libs-only-other --libs-only-L MLV` main.o plateau.o jeu.o mlv.o `pkg-config --libs-only-l MLV` -o main
+
+main.o: main.c
+	$(CC) $(OPTION) main.c -c
+
+plateau.o: plateau.c plateau.h
+	$(CC) $(OPTION) plateau.c -c
+
+jeu.o: jeu.c jeu.h
+	$(CC) $(OPTION) jeu.c -c
+
+mlv.o: mlv.c mlv.h
+	$(CC) $(OPTION) mlv.c -c
 
 clean :
-	rm *.o $(EXEC_FILES)
+	rm -rf *.o *~ main
