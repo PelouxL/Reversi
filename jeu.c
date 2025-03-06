@@ -26,5 +26,4 @@ void couleur_adverse(int couleur){
     return NOIR;
 }
 
-        
-
+    
