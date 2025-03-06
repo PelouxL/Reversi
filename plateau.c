@@ -28,6 +28,7 @@ plateau * initialisation_plateau(int n){
 	free(p->mat[i]);
         p->mat[i] = NULL;
       }
+      
       free(p->mat);
       p->mat = NULL;
       free(p);

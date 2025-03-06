@@ -9,4 +9,5 @@ cellule * ini_tab(int n);
 /* prend la couleur du j actuelle et renvoie celle de l'adversaire */
 void couleur_adverse(int couleur);
 
+
 #endif
