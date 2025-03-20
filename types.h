@@ -12,7 +12,9 @@
 typedef struct{
   int **mat; /* matrice carre ? */
   int n;
-}plateau;
+  int j_couleur;
+  int ordi_cordi;
+}plateau; /* variable globale ? */
 
 typedef struct{
   int x;
@@ -20,8 +22,8 @@ typedef struct{
 }cellule;
 
 typedef struct{
-  int j_couleur;
-  int ordi_cordi;
-}couleur_j;
+    int n;
+    cellule *c;
+}l_cellule;
 
 #endif
