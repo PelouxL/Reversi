@@ -21,7 +21,7 @@ void affichage_mlv(plateau *p){
 
     /* calcul pour contour */
     contour_x = l_p - CONTOUR;
-    contour_y = h_p- CONTOUR;
+    contour_y = h_p - CONTOUR;
     taille_contour = base + 2 * CONTOUR;
 
     /* dessin contour du plateau */
@@ -42,8 +42,7 @@ void affichage_mlv(plateau *p){
 
             /* affichage des pions */
             if(p -> mat[i][j] == 1){
-                MLV_draw_filled_circle(x + CASES / 2, y + CASES / 2, radius, MLV_COLOR_BLACK);
-            }
+                MLV_draw_filled_circle(x + CASES / 2, y + CASES / 2, radius, MLV_COLOR_BLACK);            }
             else if(p -> mat[i][j] == 2){
                 MLV_draw_filled_circle(x + CASES / 2, y + CASES / 2, radius, MLV_COLOR_WHITE);
             }
@@ -65,4 +64,25 @@ void affichage_mlv(plateau *p){
     }
     
     MLV_actualise_window();
+}
+
+cellule obtenir_coord(plateau *p, int s_x, int s_y){
+    int x, y, l_p, h_p, base;
+    cellule c;
+    
+    base = p -> n * (CASES + ESPACEMENT);
+    l_p = (LX - base) / 2;
+    h_p = (LY - base) / 2;
+
+    if(s_x >= l_p && s_x <= l_p + base && s_y >= h_p && s_y <= h_p + base){
+        x = (s_x - l_p) / (CASES + ESPACEMENT);
+        y = (s_y - h_p) / (CASES + ESPACEMENT);
+        printf("Coordonnée dans le plateau cliqué : [%d ; %d]\n", x, y);
+        c.x = x;
+        c.y = y;
+    }
+    else{
+        printf("Valeur cliqué pas dans le plateau\n");
+    }
+    return c;
 }
