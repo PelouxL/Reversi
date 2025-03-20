@@ -1,15 +1,16 @@
 #ifndef _JEU_H_
 #define _JEU_H_
 
-#include "types.h"
+#include "cellule.h"
+#include "plateau.h"
 
-/* permet avec un tableau de coordonnees de retourner les pieces adverse */
-void retourner_pieces(plateau *p, cellule *t_coordonnees, int taille, int couleur);
+void retourner_pieces(plateau p, l_cellule l_cel, int coul);
+/* Retourne les pieces du plateau dont les coordonnees ont ete passees en parametres dans la couleur indiquee */
 
-cellule * ini_tab(int n);
+int couleur_adverse(int couleur);
+/* Renvoi la couleur de l'adversaire */
 
-/* prend la couleur du j actuelle et renvoie celle de l'adversaire */
-void couleur_adverse(int couleur);
-
+l_cellule coups_possibles(plateau p, int coul_j);
+/* Renvoie la liste de cellules ou le joueur de la couleur passee en parametre peut poser un pion */
 
 #endif

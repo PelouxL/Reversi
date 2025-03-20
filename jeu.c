@@ -1,8 +1,7 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include "cellule.h"
-#include "plateau.h"
+#ifndef _JEU_C_
+#define _JEU_C_
 
+#include "jeu.h"
 
 void retourner_pieces(plateau p, l_cellule l_cel, int coul){
     
@@ -97,3 +96,5 @@ cellule suite(plateau p, int x_dep, int y_dep, int coul_adv, int dir_x, int dir_
     return cel;
     
 }
+
+#endif
