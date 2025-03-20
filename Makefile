@@ -1,24 +1,17 @@
 CC = gcc
 OPTION = -W -Wall -std=c89 -pedantic -O2
+OBJET= ./Objet/
+SOURCE= ./Source/
+EXEC_FILES = $(OBJET)main.o $(OBJET)plateau.o $(OBJET)jeu.o $(OBJET)mlv.o $(OBJET)cellule.o 
 
-main: main.o plateau.o jeu.o mlv.o cellule.o
-	$(CC) $(OPTION) `pkg-config --cflags MLV` `pkg-config --libs-only-other --libs-only-L MLV` main.o plateau.o jeu.o mlv.o cellule.o `pkg-config --libs-only-l MLV` -o main
+all: main
 
-main.o: main.c
-	$(CC) $(OPTION) main.c -c
+main: $(EXEC_FILES)
+	$(CC) $(OPTION) `pkg-config --cflags MLV` `pkg-config --libs-only-other --libs-only-L MLV` $^ `pkg-config --libs-only-l MLV` -o $@
 
-plateau.o: plateau.c plateau.h
-	$(CC) $(OPTION) plateau.c -c
-
-cellule.o: cellule.c cellule.h
-	$(CC) $(OPTION) $< -c
-
-
-jeu.o: jeu.c jeu.h
-	$(CC) $(OPTION) jeu.c -c
-
-mlv.o: mlv.c mlv.h
-	$(CC) $(OPTION) mlv.c -c
+$(OBJET)%.o: $(SOURCE)%.c $(SOURCE)%.h
+	mkdir -p $(OBJET)
+	$(CC) $(OPTION) $< -c -o $@
 
 clean :
-	rm -rf *.o *~ main
+	rm -rf $(OBJET) *~ main
