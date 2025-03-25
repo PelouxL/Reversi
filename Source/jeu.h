@@ -4,6 +4,16 @@
 #include "cellule.h"
 #include "plateau.h"
 
+
+void viderBuffer();
+
+l_cellule cellules_depart();
+/* nom temporaire, cette fonction permet d'avoir es 4 cellules de base */
+  
+cellule reccuperer_cellule_j();
+/* retourne une cellule que le joueur rentre a l main ( pour terminal )
+   renvie -1 -1 si la cellule est pas bonne */
+
 void retourner_pieces(plateau p, l_cellule l_cel, int coul);
 /* Retourne les pieces du plateau dont les coordonnees ont ete passees en parametres dans la couleur indiquee */
 

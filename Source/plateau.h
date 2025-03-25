@@ -12,8 +12,10 @@ typedef struct{
   int **mat; /* matrice carre ? */
   int n;
   int j_couleur;
-  int ordi_cordi;
+  int ordi_couleur;
 }plateau; /* variable globale ? */
+
+plateau *commencer_la_partie(plateau *p);
 
 plateau *initialisation_plateau(int n);
 

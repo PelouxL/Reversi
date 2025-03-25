@@ -3,6 +3,46 @@
 
 #include "jeu.h"
 
+void viderBuffer(){
+  int c = 0;
+  while (c != '\n' && c != EOF)
+    {
+      c = getchar();
+    }
+
+}
+
+l_cellule cellules_depart(){
+  l_cellule c;
+  
+  c = creer_l_cellule();
+  c = ajouter_cellule(c, 3, 4);
+  c = ajouter_cellule(c, 3, 5); 
+  c = ajouter_cellule(c, 4, 4); 
+  c = ajouter_cellule(c, 4, 5); 
+  return c;
+} 
+
+cellule reccuperer_cellule_j(){
+  char c;
+  int lig, col;
+  cellule cel;
+
+  printf("Veuillez choisir une cellule format lettre chiffre ex 1A\n");
+  if( (scanf("%c%d",&c , &lig) != 2) || c < 'A' || c > 'H' || lig < 1 || lig > 8){
+    printf("erreur lors de la saisie\n");
+    cel.x = -1;
+    cel.y = -1;
+    return cel;
+  }
+  col = (c - 'A');
+  cel.x = lig - 1;
+  cel.y = col;
+  printf("%d %d\n", cel.x, cel.y);
+  return cel;
+}
+
+
 void retourner_pieces(plateau p, l_cellule l_cel, int coul){
     
     int i, x, y;
@@ -13,8 +53,6 @@ void retourner_pieces(plateau p, l_cellule l_cel, int coul){
         p.mat[x][y] = coul;
     }
 }
-
-
 
 
 int couleur_adverse(int couleur){
