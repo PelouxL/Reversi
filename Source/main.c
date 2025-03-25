@@ -4,35 +4,29 @@ int main(){
   int n = 8;
   plateau *p = NULL;
   l_cellule c;
-
+  cellule coup;
 
   /* MLV_create_window("Reversi", "Reversi", LX, LY); */
     
   p = initialisation_plateau(n);
   p = commencer_la_partie(p);
   
-  printf("%d COULEUR %d\n", p->j_couleur ,  p->ordi_couleur);
+  printf("%d COULEUR %d\n", p->j_couleur , p->ordi_couleur);
     
-  inserer_pions(p, 4, 'D', NOIR);
-  inserer_pions(p, 5, 'D', BLANC);
-  inserer_pions(p, 6, 'D', BLANC);
-  /* inserer_pions(p, 5, 'G', NOIR); */
-  /* inserer_pions(p, 5, 'H', BLANC); */
-  inserer_pions(p, 5, 'E', BLANC);
-  inserer_pions(p, 4, 'E', NOIR);
-  inserer_pions(p, 6, 'E', NOIR);
+  inserer_pions(p, 3, 'D' - 'A', NOIR);
+  inserer_pions(p, 4, 'D' - 'A', BLANC);
+  inserer_pions(p, 5, 'D' - 'A', BLANC);
+  inserer_pions(p, 4, 'E' - 'A', BLANC);
+  inserer_pions(p, 3, 'E' - 'A', NOIR);
+  inserer_pions(p, 5, 'E' - 'A', NOIR);
   affiche_plateau(p);
 
-  /* c = creer_l_cellule(); */
-  /* c = ajouter_cellule(c, 3, 1); */
-  /* c = ajouter_cellule(c, 4, 1); */
-
-  c = coups_possibles(*p, NOIR);
+  c = coups_possibles(*p, p->j_couleur);
 
   afficher_cel(c);
-  reccuperer_cellule_j();
-  /* retourner_pieces(p, c.cel, c.n, NOIR);  */
-  /* affiche_plateau(p); */
+  coup = reccuperer_cellule_j();
+  p = jouer_coup_j(p, c, coup);
+  affiche_plateau(p); 
   /* affichage_mlv(p); */
   /* MLV_wait_seconds(10); */
   /* printf("une fois afficher, on efface en memoire \n"); */

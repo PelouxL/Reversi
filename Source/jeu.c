@@ -28,14 +28,14 @@ cellule reccuperer_cellule_j(){
   int lig, col;
   cellule cel;
 
-  printf("Veuillez choisir une cellule format lettre chiffre ex 1A\n");
+  printf("Veuillez choisir une cellule format lettre chiffre ex A1\n");
   if( (scanf("%c%d",&c , &lig) != 2) || c < 'A' || c > 'H' || lig < 1 || lig > 8){
     printf("erreur lors de la saisie\n");
     cel.x = -1;
     cel.y = -1;
     return cel;
   }
-  col = (c - 'A');
+  col = c - 'A';
   cel.x = lig - 1;
   cel.y = col;
   printf("%d %d\n", cel.x, cel.y);
@@ -156,5 +156,19 @@ l_cellule coups_possibles(plateau p, int coul_j){
         
 }
 
+
+plateau *jouer_coup_j(plateau *p, l_cellule coup_dispo, cellule coup){
+  int i;
+  for(i = 0; i < coup_dispo.n; i++){
+    if(coup.x == coup_dispo.cel[i].x && coup.y  == coup_dispo.cel[i].y){
+      inserer_pions(p, coup.x, coup.y, p->j_couleur);
+      /* affichage pour les test, ça ne restera pas */
+      printf("insertion faite en %d %c \n", coup.x + 1, coup.y + 'A');
+      return p;
+    }
+  }
+  printf("Coup non valide\n");
+  return p;
+}
 
 #endif
