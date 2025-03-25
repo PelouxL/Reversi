@@ -14,6 +14,9 @@ void retourner_pieces(plateau p, l_cellule l_cel, int coul){
     }
 }
 
+
+
+
 int couleur_adverse(int couleur){
     if(couleur == NOIR){
         return BLANC;
@@ -21,26 +24,44 @@ int couleur_adverse(int couleur){
     return NOIR;
 }
 
+
+
 /* Fonctions de calcul des coups possibles */
-l_cellule coups_possibles(plateau p, int coul_j){
+cellule suite(plateau p, int x_dep, int y_dep, int coul_adv, int dir_x, int dir_y){
 
+    cellule cel;
     int i, j;
-    l_cellule l_cel;
+    
+    i = x_dep+dir_x;
+    j = y_dep+dir_y;
 
-    l_cel = creer_l_cellule();
-
-    for (i=0; i < p.n; i++){
-        for (j=0; j < p.n; j++){
-
-            if (p.mat[i][j] == coul_j){ /* la cases contient un pion du joueur actuel */
-                l_cel = concat_l_cellule(l_cel, voisins(p, i, j, coul_j));
-            }         
-        }
+    /* on parcours les cellules jusqu'arriver soit en dehors du plateau soit sur une case vide ou qui de la couleur opposee */
+    while ((i >= 0 && i < p.n) && (j >= 0 && j < p.n)
+           && p.mat[i][j] == coul_adv){
+        printf("      On regarde en %d%c\n", i+1, j+'A');
+        i += dir_x;
+        j += dir_y;
     }
 
-    return l_cel;
-        
+    /* on verifie la raison de la sortie de la boucle while */
+    if (i < 0 || i >= p.n || j < 0 || j >= p.n
+        || p.mat[i][j] == couleur_adverse(coul_adv)){
+        /* on renvoi une cellule "impossible" */
+        cel.x = -1;
+        cel.y = -1;
+        printf("      Finalement non\n");
+    } else {
+        cel.x = i;
+        cel.y = j;
+        printf("------Tu pourras poser en %d%c\n", cel.x+1, cel.y+'A');
+    }
+
+    return cel;
+    
 }
+
+
+
 
 l_cellule voisins(plateau p, int x_dep, int y_dep, int coul_j){
 
@@ -56,47 +77,46 @@ l_cellule voisins(plateau p, int x_dep, int y_dep, int coul_j){
             if ((x_dep+i >= 0 && x_dep+i < p.n) && (y_dep+j >= 0 && y_dep+j < p.n) /* on évite le seg fault */
                 && p.mat[x_dep+i][y_dep+j] == (coul_adv = couleur_adverse(coul_j))){
 
+                printf("   %d%c pourrait avoir une suite possible\n", x_dep+i+1, y_dep+j+'A');
+
                 cel = suite(p, x_dep, y_dep, coul_adv, i, j);
 
                 if (cel.x != -1 && cel.y != -1){
-                    l_cel = ajouter_cellule(l_cel, x_dep+i, y_dep+j);
+                    l_cel = ajouter_cellule(l_cel, cel.x, cel.y);
                 
                 }
                 
+            } else {
+                printf("   Impossible de placer un pion dans la direction de %d%c\n", x_dep+i+1, y_dep+j+'A');
             }
         }
     }
+    
     return l_cel;
 }
 
-cellule suite(plateau p, int x_dep, int y_dep, int coul_adv, int dir_x, int dir_y){
 
-    cellule cel;
+
+l_cellule coups_possibles(plateau p, int coul_j){
+
     int i, j;
-    
-    i = x_dep+dir_x;
-    j = y_dep+dir_y;
+    l_cellule l_cel;
 
-    /* on parcours les cellules jusqu'arriver soit en dehors du plateau soit sur une case vide ou qui de la couleur opposee */
-    while ((i >= 0 && i < p.n) && (j >= 0 && j < p.n)
-           && p.mat[i][j] == coul_adv){
-        i += dir_x;
-        j += dir_y;
+    l_cel = creer_l_cellule();
+
+    for (i=0; i < p.n; i++){
+        for (j=0; j < p.n; j++){
+
+            if (p.mat[i][j] == coul_j){ /* la cases contient un pion du joueur actuel */
+                printf("Je regarde pour %d%c : \n", i+1, j+'A');
+                l_cel = concat_l_cellule(l_cel, voisins(p, i, j, coul_j));
+            }         
+        }
     }
 
-    /* on verifie la raison de la sortie de la boucle while */
-    if (i < 0 || i >= p.n || j < 0 || j >= p.n
-        || p.mat[i][j] == couleur_adverse(coul_adv)){
-        /* on renvoi une cellule "impossible" */
-        cel.x = -1;
-        cel.y = -1;
-    } else {
-        cel.x = i;
-        cel.y = j;
-    }
-
-    return cel;
-    
+    return l_cel;
+        
 }
+
 
 #endif

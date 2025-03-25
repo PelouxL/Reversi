@@ -54,7 +54,6 @@ void vider_plateau(plateau *p){
 
 void affiche_plateau(plateau *p){
   int i, j;
-  char tab[8] ={'A','B','C','D','E','F','G','H'};
 
   /****************************************/
   /* Penser a mettre un truc pour refresh */
@@ -90,7 +89,7 @@ void affiche_plateau(plateau *p){
   /* affichage des lettres pour les coordonnees des cellules */
   printf("\n    ");
   for(i = 0 ; i < p->n; i++){
-    printf("%c ", tab[i]);
+    printf("%c ", 'A'+i);
   }  
   printf("\n");
 }
@@ -98,7 +97,16 @@ void affiche_plateau(plateau *p){
 
 /* permet de changer la couleur d'un pion */
 void inserer_pions(plateau *p, int i, int j, int couleur){
-  p -> mat[i][j] = couleur;
+
+    /* if (i > 0 && i <= p->n */
+    /*     && j >= 'A' && j <= 'A'+p->n){ */
+        
+    p->mat[i-1][j-'A'] = couleur;
+    /*     return 1; */
+    /* } */
+
+    /* printf("La case entrée n'est pas valide\n"); */
+    /* return 0; */
 }
 /*
 int main(){

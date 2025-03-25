@@ -3,9 +3,10 @@
 #include "cellule.h"
 
 void afficher_cel(l_cellule l_c){
+    
     int i;
     for( i = 0; i < l_c.n ; i++ ){
-        printf("%d et %d\n", l_c.cel[i].x, l_c.cel[i].y);
+        printf("%d%c, ", l_c.cel[i].x+1, l_c.cel[i].y+'A');
     }
     printf("\n");
 }
@@ -43,21 +44,24 @@ l_cellule concat_l_cellule(l_cellule l_c1, l_cellule l_c2){
     }
     
     for(i = 0; i < l_c2.n; i++){
-        
+    
         ajout = 1;
+        
         for(j = 0; j < l_c1.n; j++){
                 
             if(l_c2.cel[i].x == l_c1.cel[j].x && l_c2.cel[i].y == l_c1.cel[j].y){
                 ajout = 0;
             }
         }
+        
         if(ajout == 1){
-            ajouter_cellule(l_c1, l_c2.cel[i].x, l_c2.cel[i].y);
+            l_c1 = ajouter_cellule(l_c1, l_c2.cel[i].x, l_c2.cel[i].y);
         }
         
     }
 
     liberer_l_cellule(l_c2);
+    
     return l_c1;
 }
 
