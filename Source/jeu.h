@@ -26,4 +26,7 @@ l_cellule coups_possibles(plateau p, int coul_j);
 plateau *jouer_coup_j(plateau *p, l_cellule coup_dispo, cellule coup);
 /* Insere dans le plateau le coup rentrer par le joueur si c'est disponible */
 
+plateau *jouer_coup_ordi(plateau *p, l_cellule coup_dispo);
+/* Fait jouer l'odinateur sans algo de reflexion */
+
 #endif

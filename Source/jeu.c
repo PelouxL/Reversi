@@ -171,4 +171,11 @@ plateau *jouer_coup_j(plateau *p, l_cellule coup_dispo, cellule coup){
   return p;
 }
 
+plateau *jouer_coup_ordi(plateau *p, l_cellule coup_dispo){
+    int choix;
+    choix = rand()%coup_dispo.n;
+    inserer_pions(p, coup_dispo.cel[choix].x,coup_dispo.cel[choix].y, p->ordi_couleur);
+    return p;
+}
+
 #endif

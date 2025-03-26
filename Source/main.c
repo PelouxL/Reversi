@@ -26,7 +26,11 @@ int main(){
   afficher_cel(c);
   coup = reccuperer_cellule_j();
   p = jouer_coup_j(p, c, coup);
-  affiche_plateau(p); 
+  affiche_plateau(p);
+
+  c = coups_possibles(*p, p->ordi_couleur);
+  p = jouer_coup_ordi(p, c);
+  affiche_plateau(p);
   /* affichage_mlv(p); */
   /* MLV_wait_seconds(10); */
   /* printf("une fois afficher, on efface en memoire \n"); */
