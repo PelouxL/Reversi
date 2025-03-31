@@ -43,14 +43,43 @@ cellule reccuperer_cellule_j(){
 }
 
 
-void retourner_pieces(plateau p, l_cellule l_cel, int coul){
+void retourner_pieces(plateau *p, cellule c1, cellule c2){
     
-    int i, x, y;
+    int i, j,
+        coul = p->mat[c1.x][c1.y],
+        dir_x, dir_y;
+
+    /* retrouver la direction */
+    if (c2.x > c1.x){
+        dir_x = 1;
+    } else if (c2.x == c1.x){
+        dir_x = 0;
+    } else {
+        dir_x = -1;
+    }
+
+    if (c2.y > c1.y){
+        dir_y = 1;
+    } else if (c2.y == c1.y){
+        dir_y = 0;
+    } else {
+        dir_y = -1;
+    }
+
+    printf("dir_x = %d, dir_y = %d\n", dir_x, dir_y);
     
-    for (i = 0; i < l_cel.n; i++){
-        x = l_cel.cel[i].x;
-        y = l_cel.cel[i].y;
-        p.mat[x][y] = coul;
+    /* retournement des pièces */
+    for (i = c1.x, j = c1.y;
+         i <= c2.x && j <= c2.y;
+         i += dir_x, j += dir_y){
+        
+        /* for (j = c1.y; j < c2.y; j += dir_y){ */
+
+        printf("i = %d, j = %d\n", i, j);
+
+        p->mat[i][j] = coul;
+
+        
     }
 }
 
