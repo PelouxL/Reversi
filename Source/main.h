@@ -8,5 +8,6 @@
 #include "jeu.h"
 #include "cellule.h"
 #include "mlv.h"
+#include "deroulement.h"
 
 #endif

@@ -16,29 +16,31 @@ l_cellule cellules_depart(){
   l_cellule c;
   
   c = creer_l_cellule();
-  c = ajouter_cellule(c, 3, 4);
-  c = ajouter_cellule(c, 3, 5); 
-  c = ajouter_cellule(c, 4, 4); 
-  c = ajouter_cellule(c, 4, 5); 
+  c = ajouter_cellule(c, 3, 'D'-'A');
+  c = ajouter_cellule(c, 3, 'E'-'A'); 
+  c = ajouter_cellule(c, 4, 'D'-'A'); 
+  c = ajouter_cellule(c, 4, 'E'-'A'); 
   return c;
 } 
 
-cellule reccuperer_cellule_j(){
+cellule reccuperer_cellule_j(plateau *p){
   char c;
   int lig, col;
   cellule cel;
 
   printf("Veuillez choisir une cellule format lettre chiffre ex A1\n");
-  if( (scanf("%c%d",&c , &lig) != 2) || c < 'A' || c > 'H' || lig < 1 || lig > 8){
+  if( (scanf("%c%d",&c , &lig) != 2) || c < 'A' || c >= 'A' + p->n || lig < 1 || lig > 8){
     printf("erreur lors de la saisie\n");
     cel.x = -1;
     cel.y = -1;
+     viderBuffer();
     return cel;
   }
   col = c - 'A';
   cel.x = lig - 1;
   cel.y = col;
   printf("%d %d\n", cel.x, cel.y);
+  viderBuffer();
   return cel;
 }
 
@@ -185,25 +187,27 @@ l_cellule coups_possibles(plateau p, int coul_j){
         
 }
 
+    
+plateau *jouer_coup_j(plateau *p, l_cellule *coup_dispo, cellule coup){
 
-plateau *jouer_coup_j(plateau *p, l_cellule coup_dispo, cellule coup){
-  int i;
-  for(i = 0; i < coup_dispo.n; i++){
-    if(coup.x == coup_dispo.cel[i].x && coup.y  == coup_dispo.cel[i].y){
-      inserer_pions(p, coup.x, coup.y, p->j_couleur);
-      /* affichage pour les test, ça ne restera pas */
-      printf("insertion faite en %d %c \n", coup.x + 1, coup.y + 'A');
-      return p;
-    }
-  }
-  printf("Coup non valide\n");
-  return p;
+    inserer_pions(p, coup.x, coup.y, p->j_couleur);
+    /* affichage pour les test, ça ne restera pas */
+    supprimer_cellule(coup_dispo, coup);
+    printf("insertion faite en %d %c \n", coup.x + 1, coup.y + 'A');
+    return p;
 }
 
-plateau *jouer_coup_ordi(plateau *p, l_cellule coup_dispo){
+plateau *jouer_coup_ordi(plateau *p, l_cellule *coup_dispo){
     int choix;
-    choix = rand()%coup_dispo.n;
-    inserer_pions(p, coup_dispo.cel[choix].x,coup_dispo.cel[choix].y, p->ordi_couleur);
+    cellule coup;
+    
+    choix = rand()%coup_dispo->n;
+    coup.x = coup_dispo->cel[choix].x;
+    coup.y = coup_dispo->cel[choix].y;
+ 
+    inserer_pions(p, coup.x, coup.y, p->ordi_couleur);
+    supprimer_cellule(coup_dispo, coup);
+    
     return p;
 }
 

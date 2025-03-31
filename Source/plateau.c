@@ -1,23 +1,24 @@
 #include "plateau.h"
+#include <unistd.h>
 #include "jeu.h"
 
 plateau *commencer_la_partie(plateau *p){
-   char commencer = 'A';
+    char commencer = 'A';
    
-   while( commencer != 'N' && commencer != 'O' ){
-    printf("Voulez vous commencez ? ( vous jourez les pions noirs ) O ou N\n");
-    if( (scanf("%c", &commencer) != 1) || commencer != 'O' || commencer != 'N'){
-      printf("erreur veuillez rentrez O ou N pour commencez\n");
-      viderBuffer();
+    while( commencer != 'N' && commencer != 'O' ){
+        printf("Voulez vous commencer ? ( vous jouerez les pions noirs ) O ou N\n");
+        if( (scanf("%c", &commencer) != 1) || commencer != 'O' || commencer != 'N' || commencer != 'n' || commencer != 'o'){
+            fprintf(stderr, "erreur veuillez rentrer O ou N pour commencer\n");
+            viderBuffer();
+        }
     }
-  }
-  if( commencer == 'O'){
-    p->j_couleur = NOIR;
-  }else{
-    p->j_couleur = BLANC;
-  }
-  p->ordi_couleur = couleur_adverse( p->j_couleur );
-  return p;
+    if( commencer == 'O' || commencer == 'o'){
+        p->j_couleur = NOIR;
+    }else{
+        p->j_couleur = BLANC;
+    }
+    p->ordi_couleur = couleur_adverse( p->j_couleur );
+    return p;
 }
 
 plateau * initialisation_plateau(int n){
@@ -78,6 +79,8 @@ void affiche_plateau(plateau *p){
   /****************************************/
   /* Penser a mettre un truc pour refresh */
   /****************************************/
+  if(system("clear") == 0){
+  }
   
   /* ligne du dessus */
   printf("   ");

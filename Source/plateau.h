@@ -5,8 +5,8 @@
 #include<stdlib.h>
 
 #define VIDE 0
-#define NOIR 1
-#define BLANC 2
+#define NOIR 2
+#define BLANC 1
 
 typedef struct{
   int **mat; /* matrice carre ? */
