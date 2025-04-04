@@ -14,7 +14,9 @@ cellule reccuperer_cellule_j(plateau *p);
 /* retourne une cellule que le joueur rentre a l main ( pour terminal )
    renvie -1 -1 si la cellule est pas bonne */
 
-void retourner_pieces(plateau *p, cellule c1, cellule c2);
+l_cellule pieces_a_retourner(plateau p, cellule coup, int coul_j);
+
+void retourner_pieces(plateau *p, cellule c1, l_cellule r);
 /* Retourne les pieces du plateau dont les coordonnees ont ete passees en parametres dans la couleur indiquee */
 
 int couleur_adverse(int couleur);

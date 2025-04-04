@@ -4,9 +4,9 @@
 #include "deroulement.h"
 
 int jeu_terminal(plateau *p){
-    l_cellule c;
+    l_cellule c, r;
     cellule coup;
-    int verif_fin = 0, tour = 0, valide = 0;
+    int tour = 0, valide = 0, fin = 0, j_actuel;
     
     c = cellules_depart();
     p = commencer_la_partie(p);
@@ -19,13 +19,13 @@ int jeu_terminal(plateau *p){
         printf("%d val de lc et n = %d\n", est_l_c_vide(c), c.n);
         affiche_plateau(p);
         tour++;
-
-        if (tour%2 + 1 == p->j_couleur){
+        j_actuel = tour%2 + 1;
+        if (j_actuel == p->j_couleur){
             /* Tour du joueur */
             printf("Vous avez le droit de jouez dans ces cellules ci-dessous :\n");
             afficher_cel(c);
         
-            while( valide != 1){          
+            while(valide != 1){          
                 coup = reccuperer_cellule_j(p);
                 valide = appartient_l_c(c, coup);
                 
@@ -45,12 +45,32 @@ int jeu_terminal(plateau *p){
     /***************************************/
     do{
         tour++;
+        j_actuel = tour%2 + 1;
         affiche_plateau(p);
-         if (tour%2 + 1 == p->j_couleur){
-             c = coups_possible(
-
-
-    }while(est_l_c_vide(c) == 0);
+        c = coups_possibles(*p, j_actuel);
+        if (!(fin = est_l_c_vide(c))){
+            printf("FIN EST EGAL A = %d\n", fin);
+            if(j_actuel == p->j_couleur){
+                
+                while(valide != 1){
+                    afficher_cel(c);
+                    coup = reccuperer_cellule_j(p);
+                    valide = appartient_l_c(c, coup);
+                }
+                p = jouer_coup_j(p, &c, coup);
+                r = pieces_a_retourner(*p, coup, j_actuel);
+                retourner_pieces(p, coup, r);
+                liberer_l_cellule(&r);
+                
+                
+                valide = 0;
+                
+            }else{
+                printf("Tour de l'ordi\n");
+                p = jouer_coup_ordi(p, &c) ;
+            }
+        }
+    }while(fin == 0);
     
     return 1;
 }

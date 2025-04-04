@@ -45,47 +45,6 @@ cellule reccuperer_cellule_j(plateau *p){
 }
 
 
-void retourner_pieces(plateau *p, cellule c1, cellule c2){
-    
-    int i, j,
-        coul = p->mat[c1.x][c1.y],
-        dir_x, dir_y;
-
-    /* retrouver la direction */
-    if (c2.x > c1.x){
-        dir_x = 1;
-    } else if (c2.x == c1.x){
-        dir_x = 0;
-    } else {
-        dir_x = -1;
-    }
-
-    if (c2.y > c1.y){
-        dir_y = 1;
-    } else if (c2.y == c1.y){
-        dir_y = 0;
-    } else {
-        dir_y = -1;
-    }
-
-    printf("dir_x = %d, dir_y = %d\n", dir_x, dir_y);
-    
-    /* retournement des pièces */
-    for (i = c1.x, j = c1.y;
-         i <= c2.x && j <= c2.y;
-         i += dir_x, j += dir_y){
-        
-        /* for (j = c1.y; j < c2.y; j += dir_y){ */
-
-        printf("i = %d, j = %d\n", i, j);
-
-        p->mat[i][j] = coul;
-
-        
-    }
-}
-
-
 int couleur_adverse(int couleur){
     if(couleur == NOIR){
         return BLANC;
@@ -96,7 +55,7 @@ int couleur_adverse(int couleur){
 
 
 /* Fonctions de calcul des coups possibles */
-cellule suite(plateau p, int x_dep, int y_dep, int coul_adv, int dir_x, int dir_y){
+cellule suite(plateau p, int x_dep, int y_dep, int coul_adv, int dir_x, int dir_y, int bout){
 
     cellule cel;
     int i, j;
@@ -107,22 +66,22 @@ cellule suite(plateau p, int x_dep, int y_dep, int coul_adv, int dir_x, int dir_
     /* on parcours les cellules jusqu'arriver soit en dehors du plateau soit sur une case vide ou qui de la couleur opposee */
     while ((i >= 0 && i < p.n) && (j >= 0 && j < p.n)
            && p.mat[i][j] == coul_adv){
-        printf("      On regarde en %d%c\n", i+1, j+'A');
+        /* printf("      On regarde en %d%c\n", i+1, j+'A'); */
         i += dir_x;
         j += dir_y;
     }
 
     /* on verifie la raison de la sortie de la boucle while */
     if (i < 0 || i >= p.n || j < 0 || j >= p.n
-        || p.mat[i][j] == couleur_adverse(coul_adv)){
+        || p.mat[i][j] != bout){
         /* on renvoi une cellule "impossible" */
         cel.x = -1;
         cel.y = -1;
-        printf("      Finalement non\n");
+        /* printf("      Finalement non\n"); */
     } else {
         cel.x = i;
         cel.y = j;
-        printf("------Tu pourras poser en %d%c\n", cel.x+1, cel.y+'A');
+        /* printf("------Tu pourras poser en %d%c\n", cel.x+1, cel.y+'A'); */
     }
 
     return cel;
@@ -132,12 +91,13 @@ cellule suite(plateau p, int x_dep, int y_dep, int coul_adv, int dir_x, int dir_
 
 
 
-l_cellule voisins(plateau p, int x_dep, int y_dep, int coul_j){
+l_cellule voisins(plateau p, int x_dep, int y_dep, int coul_j, int bout){
 
     int i, j, coul_adv;
     cellule cel;
     l_cellule l_cel;
 
+    
     l_cel = creer_l_cellule();
 
     for (i = -1; i <= 1; i++){
@@ -146,9 +106,9 @@ l_cellule voisins(plateau p, int x_dep, int y_dep, int coul_j){
             if ((x_dep+i >= 0 && x_dep+i < p.n) && (y_dep+j >= 0 && y_dep+j < p.n) /* on évite le seg fault */
                 && p.mat[x_dep+i][y_dep+j] == (coul_adv = couleur_adverse(coul_j))){
 
-                printf("   %d%c pourrait avoir une suite possible\n", x_dep+i+1, y_dep+j+'A');
+                /* printf("   %d%c pourrait avoir une suite possible\n", x_dep+i+1, y_dep+j+'A'); */
 
-                cel = suite(p, x_dep, y_dep, coul_adv, i, j);
+                cel = suite(p, x_dep, y_dep, coul_adv, i, j, bout);
 
                 if (cel.x != -1 && cel.y != -1){
                     l_cel = ajouter_cellule(l_cel, cel.x, cel.y);
@@ -156,14 +116,13 @@ l_cellule voisins(plateau p, int x_dep, int y_dep, int coul_j){
                 }
                 
             } else {
-                printf("   Impossible de placer un pion dans la direction de %d%c\n", x_dep+i+1, y_dep+j+'A');
+                /* printf("   Impossible de placer un pion dans la direction de %d%c\n", x_dep+i+1, y_dep+j+'A'); */
             }
         }
     }
     
     return l_cel;
 }
-
 
 
 l_cellule coups_possibles(plateau p, int coul_j){
@@ -177,8 +136,8 @@ l_cellule coups_possibles(plateau p, int coul_j){
         for (j=0; j < p.n; j++){
 
             if (p.mat[i][j] == coul_j){ /* la cases contient un pion du joueur actuel */
-                printf("Je regarde pour %d%c : \n", i+1, j+'A');
-                l_cel = concat_l_cellule(l_cel, voisins(p, i, j, coul_j));
+                /* printf("Je regarde pour %d%c : \n", i+1, j+'A'); */
+                l_cel = concat_l_cellule(l_cel, voisins(p, i, j, coul_j, VIDE));
             }         
         }
     }
@@ -192,6 +151,7 @@ plateau *jouer_coup_j(plateau *p, l_cellule *coup_dispo, cellule coup){
 
     inserer_pions(p, coup.x, coup.y, p->j_couleur);
     /* affichage pour les test, ça ne restera pas */
+    /* retourner_pieces(p, */
     supprimer_cellule(coup_dispo, coup);
     printf("insertion faite en %d %c \n", coup.x + 1, coup.y + 'A');
     return p;
@@ -200,15 +160,74 @@ plateau *jouer_coup_j(plateau *p, l_cellule *coup_dispo, cellule coup){
 plateau *jouer_coup_ordi(plateau *p, l_cellule *coup_dispo){
     int choix;
     cellule coup;
+    l_cellule r;
     
     choix = rand()%coup_dispo->n;
     coup.x = coup_dispo->cel[choix].x;
     coup.y = coup_dispo->cel[choix].y;
  
     inserer_pions(p, coup.x, coup.y, p->ordi_couleur);
-    supprimer_cellule(coup_dispo, coup);
+    r = pieces_a_retourner(*p, coup, p->ordi_couleur);
+    afficher_cel(r);
+    retourner_pieces(p, coup, r);
+
     
+    supprimer_cellule(coup_dispo, coup);
+    liberer_l_cellule(&r);
     return p;
 }
 
+    
+l_cellule pieces_a_retourner(plateau p, cellule coup, int coul_j){
+
+    l_cellule l_cel;
+
+    l_cel = creer_l_cellule();
+
+    l_cel = voisins(p, coup.x, coup.y, coul_j, coul_j);
+    afficher_cel(l_cel);
+
+    return l_cel;
+    
+    
+}
+
+void retourner_pieces(plateau *p, cellule c1, l_cellule r){
+    
+    int i, j, k,
+        coul = p->mat[c1.x][c1.y],
+        dir_x, dir_y;
+
+    for (k=0; k < r.n; k++){
+        
+        /* retrouver la direction */
+        if (r.cel[k].x > c1.x){
+            dir_x = 1;
+        } else if (r.cel[k].x == c1.x){
+            dir_x = 0;
+        } else {
+            dir_x = -1;
+        }
+        
+        if (r.cel[k].y > c1.y){
+            dir_y = 1;
+        } else if (r.cel[k].y == c1.y){
+            dir_y = 0;
+        } else {
+            dir_y = -1;
+        }
+
+        /* printf("dir_x = %d, dir_y = %d\n", dir_x, dir_y); */
+    
+        /* retournement des pièces */
+        for (i = c1.x, j = c1.y;
+             i != r.cel[k].x || j != r.cel[k].y;
+             i += dir_x, j += dir_y){
+            
+            p->mat[i][j] = coul;
+        }
+
+        
+    }
+}
 #endif
