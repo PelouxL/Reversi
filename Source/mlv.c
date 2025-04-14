@@ -1,4 +1,5 @@
 #include "mlv.h"
+#include "jeu.h"
 #include <MLV/MLV_all.h>
 
 #define CASES 60
@@ -6,9 +7,44 @@
 #define CONTOUR 35
 #define TEXT 50 /* ça correspondra à l'espace entre le plateau et le texte */
 
+int verif(bouton bouton, int coord_x, int coord_y){
+    if((coord_x > bouton.x && coord_x < bouton.x + bouton.largeur) && (coord_y > bouton.y && coord_y < bouton.y + bouton.hauteur)){
+        return 1;
+    }
+    return 0;
+}
+
+int clic_bouton(bouton bout[], int lng) {
+    int s_x, s_y, i;
+    
+    MLV_wait_mouse(&s_x, &s_y);
+    for (i = 0; i < lng; i++) {
+        if (verif(bout[i], s_x, s_y) == 1) {
+            return i;
+        }
+    }
+    return i;
+}
+
+void cree_bouton(bouton *bouton, char *message, int x, int y){
+    int largeur, hauteur;
+    MLV_get_size_of_adapted_text_box(message, 10, &largeur, &hauteur);
+    bouton -> x = x - largeur/2 + 1;
+    bouton -> y = y;
+    bouton -> hauteur = hauteur;
+    bouton -> largeur = largeur;
+    strcpy(bouton -> txt, message);    
+}
+
+void afficher_text(bouton bouton){
+    MLV_draw_adapted_text_box(bouton.x, bouton.y, bouton.txt, 10, MLV_COLOR_WHITE, MLV_COLOR_WHITE, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
+}
+
 void affichage_mlv(plateau *p){
     int i, j, x, y, l_p, h_p, radius, base, contour_x, contour_y, taille_contour, text_x, text_y;
     char *text_l[] = {"A", "B", "C", "D", "E", "F", "G", "H"};
+
+    MLV_clear_window(MLV_COLOR_BLACK);
 
     /* taille plateau de jeu */
     base = p -> n * (CASES + ESPACEMENT);
@@ -44,6 +80,9 @@ void affichage_mlv(plateau *p){
             else if(p -> mat[i][j] == 2){
                 MLV_draw_filled_circle(x + CASES / 2, y + CASES / 2, radius, MLV_COLOR_WHITE);
             }
+            else if(p -> mat[i][j] == 10){
+                MLV_draw_filled_circle(x + CASES / 2, y + CASES / 2, radius / 2, MLV_COLOR_GREY);
+            }                
         }
     }
 
@@ -64,9 +103,20 @@ void affichage_mlv(plateau *p){
     MLV_actualise_window();
 }
 
-cellule obtenir_coord(plateau *p, int s_x, int s_y){
-    int x, y, l_p, h_p, base;
+void affiche_cellule_possible_mlv(char *message, int text_x, int text_y){
+    int text_w, text_h;
+
+    MLV_get_size_of_adapted_text_box(message, 10, &text_w, &text_h);
+
+    MLV_draw_adapted_text_box(text_x, text_y, message, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_WHITE, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
+
+}
+
+cellule obtenir_coord(plateau *p){
+    int x, y, l_p, h_p, base, s_x, s_y;
     cellule c;
+
+    MLV_wait_mouse(&s_x, &s_y);
     
     base = p -> n * (CASES + ESPACEMENT);
     l_p = (LX - base) / 2;
@@ -75,12 +125,65 @@ cellule obtenir_coord(plateau *p, int s_x, int s_y){
     if(s_x >= l_p && s_x <= l_p + base && s_y >= h_p && s_y <= h_p + base){
         x = (s_x - l_p) / (CASES + ESPACEMENT);
         y = (s_y - h_p) / (CASES + ESPACEMENT);
-        printf("Coordonnée dans le plateau cliqué : [%d ; %d]\n", x, y);
-        c.x = x;
-        c.y = y;
+        printf("x = %d, y = %d\n", x, y);
+        c.x = y;
+        c.y = x;
+        printf("Coordonnée dans le plateau cliqué : [%c ; %d]\n", c.x + 'A', y + 1);
     }
     else{
-        printf("Valeur cliqué pas dans le plateau\n");
+        c.x = -1;
+        c.y = -1;
     }
     return c;
+}
+
+void afficher_coup_mlv(plateau *p){
+    int i, j, x, y;
+    char coup_p[50];
+    
+    x = 10;
+    y = LY / 3;
+    for(i = 0; i < p -> n; i++){
+        for(j = 0; j < p -> n; j++){
+            if(p -> mat[i][j] == COUP){
+                sprintf(coup_p, "\n%c%d ", j +'A', i + 1);
+                affiche_cellule_possible_mlv(coup_p, x, y);
+                x += 30;
+            }
+        }
+    }
+    MLV_actualise_window();
+}
+
+plateau *demande_premier_joueur(bouton bouton[], plateau *p){
+    int text_width, text_height, x, i, pressed;
+    char *nom_bouton[] = {"BLANC", "NOIR"};
+
+    MLV_clear_window(MLV_COLOR_BLACK);
+
+    MLV_get_size_of_adapted_text_box("Choisissez votre couleur de pion", 10, &text_width, &text_height);
+    MLV_draw_adapted_text_box( (LX - text_width) / 2, 50, "Choisissez votre couleur de pion", 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_WHITE, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
+
+    x = 0;
+    for(i = 0; i < 2; i++){
+        cree_bouton(&bouton[i], nom_bouton[i], LX / 2 + x - 150, LY / 2);
+        afficher_text(bouton[i]);
+        x += 150 * 2;
+    }
+    MLV_actualise_window();
+    
+    pressed = clic_bouton(bouton, 4);
+    printf("pressed = %d\n", pressed);
+    
+    if(pressed == 0){
+        printf("NOIR\n");
+        p -> j_couleur = NOIR;
+    }
+    else if(pressed == 1){
+        printf("BLANC\n");
+        p -> j_couleur = BLANC;
+    }
+    p->ordi_couleur = couleur_adverse( p->j_couleur );
+    
+    return p;
 }

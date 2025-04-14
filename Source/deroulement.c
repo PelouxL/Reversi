@@ -2,6 +2,8 @@
 #define _DEROULEMENT_C_
 
 #include "deroulement.h"
+#include "mlv.h"
+#include "joueur.h"
 
 int jeu_terminal(plateau *p){
     cellule coup;
@@ -14,7 +16,7 @@ int jeu_terminal(plateau *p){
     /* Phase de placement des 4 premiers jetons */
     /********************************************/
     
-    while(reste_coup(p)){
+    while(reste_coup(p) > 0){
 
         tour++;
         j_actuel = tour%2 + 1;
@@ -88,6 +90,90 @@ int jeu_terminal(plateau *p){
         printf("Egalité !\n");
     }
     return 1;
+}
+
+void jeu_mlv(plateau *p){
+    cellule coup;
+    int j_actuel, gagnant;
+    int tour = 0, valide = 0, fin = 0;
+    bouton boutons[2];
+
+    p = cellules_depart(p);
+    p = demande_premier_joueur(boutons, p);
+    
+    while(reste_coup(p) > 0){
+        printf("%d\n", reste_coup(p));
+        affichage_mlv(p);
+        
+        tour++;
+        j_actuel = tour % 2 + 1;
+        
+        if(j_actuel == p -> j_couleur){
+            while(valide != 1){
+                
+                coup = obtenir_coord(p);
+                
+                if((coup.x != -1 && coup.y != -1) && p -> mat[coup.x][coup.y] == COUP){
+                    valide = 1;
+                }
+            }
+            inserer_pions(p, coup.x, coup.y, p -> j_couleur);
+            affichage_mlv(p);
+            valide = 0;
+        }
+        else{
+            printf("Tour Ordi\n");
+            coup = choix_coup_ordi(p);
+            inserer_pions(p, coup.x, coup.y, p -> ordi_couleur);
+            printf("[%c - %d]\n", coup.x + 'A', coup.y);
+            affichage_mlv(p);
+        }
+        MLV_actualise_window();
+    }
+
+    do{
+        tour++;
+        j_actuel = tour % 2 + 1;
+        p = coups_possibles(p, j_actuel);
+        affichage_mlv(p);
+        if((fin = reste_coup(p))){
+            if(j_actuel == p -> j_couleur){
+                while(valide != 1){
+                
+                    coup = obtenir_coord(p);
+                    
+                    if((coup.x != -1 && coup.y != -1) && p -> mat[coup.x][coup.y] == COUP){
+                        valide = 1;
+                    }
+                }
+                inserer_pions(p, coup.x, coup.y, p -> j_couleur);
+                retourner_pieces(p, coup);
+                affichage_mlv(p);
+                valide = 0;
+            }
+            else{
+                printf("Tour Ordi\n");
+                coup = choix_coup_ordi(p);
+                inserer_pions(p, coup.x, coup.y, p -> ordi_couleur);
+                retourner_pieces(p, coup);
+                affichage_mlv(p);
+            }
+        }
+        p = remise_a_zero(p);
+    }while(fin != 0);
+
+    gagnant = couleur_gagnante(p);
+    
+    if(gagnant == p->j_couleur){
+        printf("Bravo vous avez gagné(e) !\n");
+    }else if(gagnant == p->ordi_couleur){
+        printf("Aïe ! Vous avez perdu(e) !\n");
+    }else{
+        printf("Egalité !\n");
+    }
+
+    MLV_actualise_window();
+    MLV_free_window();
 }
 
 #endif

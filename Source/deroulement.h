@@ -5,5 +5,6 @@
 
 int jeu_terminal(plateau *p);
 
+void jeu_mlv(plateau *p);
 
 #endif
