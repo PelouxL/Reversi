@@ -7,6 +7,8 @@
 #define VIDE 0
 #define NOIR 2
 #define BLANC 1
+#define COUP 10
+#define RET 11
 
 typedef struct{
   int **mat; /* matrice carre ? */

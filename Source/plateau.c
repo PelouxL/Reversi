@@ -7,11 +7,12 @@ plateau *commencer_la_partie(plateau *p){
    
     while( commencer != 'N' && commencer != 'O' ){
         printf("Voulez vous commencer ? ( vous jouerez les pions noirs ) O ou N\n");
-        if( (scanf("%c", &commencer) != 1) || commencer != 'O' || commencer != 'N' || commencer != 'n' || commencer != 'o'){
+        if( (scanf("%c", &commencer) != 1) && (commencer != 'O' || commencer != 'N' || commencer != 'n' || commencer != 'o')){
             fprintf(stderr, "erreur veuillez rentrer O ou N pour commencer\n");
-            viderBuffer();
         }
+        viderBuffer();
     }
+   
     if( commencer == 'O' || commencer == 'o'){
         p->j_couleur = NOIR;
     }else{
@@ -93,13 +94,21 @@ void affiche_plateau(plateau *p){
   for( i = 0 ; i < p->n ; i++ ){
     printf("%d | ", i+1); /* affichage des entiers des coordonnees des cellules */
     for( j = 0 ; j < p -> n ; j++){
-      if( p -> mat[i][j] == VIDE){
-	printf(". ");
-      }if( p -> mat[i][j] == NOIR){
-	printf("N ");
-      }if( p -> mat[i][j] == BLANC){
-	printf("B ");
-      }
+        
+        switch(p->mat[i][j]){    
+        case NOIR:
+            printf("N ");
+            break;
+        case BLANC:
+            printf("B ");
+            break;
+        case COUP:
+            printf("X ");
+            break;
+        default:
+            printf(". ");
+        }
+
     }
     printf("|\n");  
   }

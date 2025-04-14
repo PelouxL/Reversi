@@ -4,10 +4,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <MLV/MLV_all.h>
-#include "plateau.h"
-#include "jeu.h"
-#include "cellule.h"
+
 #include "mlv.h"
+
+#include "plateau.h"
+#include "cellule.h"
+
+#include "jeu.h"
 #include "deroulement.h"
+#include "joueur.h"
 
 #endif

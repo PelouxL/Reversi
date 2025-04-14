@@ -12,38 +12,15 @@ void viderBuffer(){
 
 }
 
-l_cellule cellules_depart(){
-  l_cellule c;
+plateau *cellules_depart(plateau *p){
+
+  p->mat[3]['D'-'A'] = COUP;
+  p->mat[3]['E'-'A'] = COUP;
+  p->mat[4]['D'-'A'] = COUP;
+  p->mat[4]['E'-'A'] = COUP;
   
-  c = creer_l_cellule();
-  c = ajouter_cellule(c, 3, 'D'-'A');
-  c = ajouter_cellule(c, 3, 'E'-'A'); 
-  c = ajouter_cellule(c, 4, 'D'-'A'); 
-  c = ajouter_cellule(c, 4, 'E'-'A'); 
-  return c;
-} 
-
-cellule reccuperer_cellule_j(plateau *p){
-  char c;
-  int lig, col;
-  cellule cel;
-
-  printf("Veuillez choisir une cellule format lettre chiffre ex A1\n");
-  if( (scanf("%c%d",&c , &lig) != 2) || c < 'A' || c >= 'A' + p->n || lig < 1 || lig > 8){
-    printf("erreur lors de la saisie\n");
-    cel.x = -1;
-    cel.y = -1;
-     viderBuffer();
-    return cel;
-  }
-  col = c - 'A';
-  cel.x = lig - 1;
-  cel.y = col;
-  printf("%d %d\n", cel.x, cel.y);
-  viderBuffer();
-  return cel;
+  return p;
 }
-
 
 int couleur_adverse(int couleur){
     if(couleur == NOIR){
@@ -53,165 +30,205 @@ int couleur_adverse(int couleur){
 }
 
 
+/* COUP */
+int reste_coup(plateau *p){
+    int i, j;
+
+    for (i=0; i < p->n; i++){
+        for (j=0; j < p->n; j++){
+            if (p->mat[i][j] == COUP){
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+
+void afficher_coup(plateau *p){
+    int i, j;
+
+    printf("Vous pouvez jouer en :");
+    for (i=0; i < p->n; i++){
+        for (j=0; j < p->n; j++){
+            if (p->mat[i][j] == COUP){
+                printf(" %c%d", j+'A', i+1);
+            }
+        }
+    }
+    printf("\n");
+}
+
+plateau *remise_a_zero(plateau *p){
+    int i, j;
+
+    for(i = 0; i < p->n; i++){
+        for(j = 0; j < p-> n; j++){
+            if( p->mat[i][j] == COUP){
+                p->mat[i][j] = VIDE;
+            }
+        }
+    }
+    return p;
+}
+
 
 /* Fonctions de calcul des coups possibles */
-cellule suite(plateau p, int x_dep, int y_dep, int coul_adv, int dir_x, int dir_y, int bout){
+plateau *suite(plateau *p, cellule c_depart, int coul_adv, int dir_x, int dir_y, int bout){
 
-    cellule cel;
-    int i, j;
-    
-    i = x_dep+dir_x;
-    j = y_dep+dir_y;
+    int i, j, tag;
+
+    i = c_depart.x+dir_x;
+    j = c_depart.y+dir_y;
+
+    if (bout == VIDE){
+        tag = COUP;
+    } else {
+        tag = RET;
+    }
 
     /* on parcours les cellules jusqu'arriver soit en dehors du plateau soit sur une case vide ou qui de la couleur opposee */
-    while ((i >= 0 && i < p.n) && (j >= 0 && j < p.n)
-           && p.mat[i][j] == coul_adv){
+    while (i >= 0 && i < p->n && j >= 0 && j < p->n
+           && p->mat[i][j] == coul_adv){
         /* printf("      On regarde en %d%c\n", i+1, j+'A'); */
         i += dir_x;
         j += dir_y;
     }
 
-    /* on verifie la raison de la sortie de la boucle while */
-    if (i < 0 || i >= p.n || j < 0 || j >= p.n
-        || p.mat[i][j] != bout){
-        /* on renvoi une cellule "impossible" */
-        cel.x = -1;
-        cel.y = -1;
-        /* printf("      Finalement non\n"); */
-    } else {
-        cel.x = i;
-        cel.y = j;
-        /* printf("------Tu pourras poser en %d%c\n", cel.x+1, cel.y+'A'); */
-    }
+    /* printf("      fin while i = %d, j = %d\n", i, j); */
+    
+    /* si on a trouvé la condition d'arret 'bout' */
+    if (i >= 0 && i < p->n && j >= 0 && j < p->n
+        && p->mat[i][j] == bout){
+        
+        p->mat[i][j] = tag;
+        /* printf("------Tu pourras poser en %d%c\n", i+1, j+'A'); */
+           
+    } /* else { */
+    /*     printf("      Finalement non\n"); */
+    /* } */
 
-    return cel;
+    return p;
     
 }
 
 
 
 
-l_cellule voisins(plateau p, int x_dep, int y_dep, int coul_j, int bout){
+plateau *voisins(plateau *p, cellule c_depart, int coul_j, int bout){
 
     int i, j, coul_adv;
-    cellule cel;
-    l_cellule l_cel;
-
-    
-    l_cel = creer_l_cellule();
 
     for (i = -1; i <= 1; i++){
         for (j = -1; j <= 1; j++){
+            /* printf(" valeur des boucle %d et %d\n", i, j); */
+            if (c_depart.x+i >= 0 && c_depart.x+i < p->n && c_depart.y+j >= 0 && c_depart.y+j < p->n /* on évite le seg fault */
+                && p->mat[c_depart.x+i][c_depart.y+j] == (coul_adv = couleur_adverse(coul_j))){
 
-            if ((x_dep+i >= 0 && x_dep+i < p.n) && (y_dep+j >= 0 && y_dep+j < p.n) /* on évite le seg fault */
-                && p.mat[x_dep+i][y_dep+j] == (coul_adv = couleur_adverse(coul_j))){
+                /* printf("   %d%c pourrait avoir une suite possible\n", c_depart.x+i+1, c_depart.y+j+'A'); */
 
-                /* printf("   %d%c pourrait avoir une suite possible\n", x_dep+i+1, y_dep+j+'A'); */
-
-                cel = suite(p, x_dep, y_dep, coul_adv, i, j, bout);
-
-                if (cel.x != -1 && cel.y != -1){
-                    l_cel = ajouter_cellule(l_cel, cel.x, cel.y);
-                
-                }
+                suite(p, c_depart, coul_adv, i, j, bout);
                 
             } else {
-                /* printf("   Impossible de placer un pion dans la direction de %d%c\n", x_dep+i+1, y_dep+j+'A'); */
+                /* printf("   Impossible de placer un pion dans la direction de %d%c\n", c_depart.x+i+1, c_depart.y+j+'A'); */
             }
         }
     }
-    
-    return l_cel;
+    return p;
 }
 
 
-l_cellule coups_possibles(plateau p, int coul_j){
+plateau *coups_possibles(plateau *p, int coul_j){
 
+    cellule c;
     int i, j;
-    l_cellule l_cel;
 
-    l_cel = creer_l_cellule();
+    printf("COUP POSSIBLES :\n");
+    for (i=0; i < p->n; i++){
+        for (j=0; j < p->n; j++){
 
-    for (i=0; i < p.n; i++){
-        for (j=0; j < p.n; j++){
-
-            if (p.mat[i][j] == coul_j){ /* la cases contient un pion du joueur actuel */
-                /* printf("Je regarde pour %d%c : \n", i+1, j+'A'); */
-                l_cel = concat_l_cellule(l_cel, voisins(p, i, j, coul_j, VIDE));
+            if (p->mat[i][j] == coul_j){ /* la cases contient un pion du joueur actuel */
+                printf("Je regarde pour %d%c : \n", i+1, j+'A');
+                c.x = i;
+                c.y = j;
+                printf(" voici la cases regarder %d et %d et sa ouleur %d\n", i, j, p->mat[i][j]);
+                voisins(p, c, coul_j, VIDE);
             }         
         }
     }
 
-    return l_cel;
+    return p;
         
 }
 
+cellule choix_coup_ordi(plateau *p){
     
-plateau *jouer_coup_j(plateau *p, l_cellule *coup_dispo, cellule coup){
-
-    inserer_pions(p, coup.x, coup.y, p->j_couleur);
-    /* affichage pour les test, ça ne restera pas */
-    /* retourner_pieces(p, */
-    supprimer_cellule(coup_dispo, coup);
-    printf("insertion faite en %d %c \n", coup.x + 1, coup.y + 'A');
-    return p;
-}
-
-plateau *jouer_coup_ordi(plateau *p, l_cellule *coup_dispo){
-    int choix;
+    int choix, i, j;
     cellule coup;
-    l_cellule r;
-    
-    choix = rand()%coup_dispo->n;
-    coup.x = coup_dispo->cel[choix].x;
-    coup.y = coup_dispo->cel[choix].y;
+    l_cellule coup_dispo;
+
+    coup_dispo = creer_l_cellule();
+
+    /* recuperation des cases possibles */
+    for(i=0; i < p->n; i++){
+        for(j=0; j < p->n; j++){
+            if(p->mat[i][j] == COUP){
+                coup_dispo = ajouter_cellule(coup_dispo, i, j);
+            }
+        }
+    }
+
+    /* choix aleatoire du coup */
+    choix = rand()%coup_dispo.n;
+    coup.x = coup_dispo.cel[choix].x;
+    coup.y = coup_dispo.cel[choix].y;
  
-    inserer_pions(p, coup.x, coup.y, p->ordi_couleur);
-    r = pieces_a_retourner(*p, coup, p->ordi_couleur);
-    afficher_cel(r);
-    retourner_pieces(p, coup, r);
+    /* inserer_pions(p, coup.x, coup.y, p->ordi_couleur); */
 
     
-    supprimer_cellule(coup_dispo, coup);
-    liberer_l_cellule(&r);
-    return p;
+    
+    /* retourner_pieces(p, coup); */
+    
+    return coup;
 }
 
-    
-l_cellule pieces_a_retourner(plateau p, cellule coup, int coul_j){
+plateau *retourner_pieces(plateau *p, cellule coup){
 
-    l_cellule l_cel;
-
-    l_cel = creer_l_cellule();
-
-    l_cel = voisins(p, coup.x, coup.y, coul_j, coul_j);
-    afficher_cel(l_cel);
-
-    return l_cel;
-    
-    
-}
-
-void retourner_pieces(plateau *p, cellule c1, l_cellule r){
-    
     int i, j, k,
-        coul = p->mat[c1.x][c1.y],
+        coul_j = p->mat[coup.x][coup.y],
         dir_x, dir_y;
+    l_cellule a_retourner;
 
-    for (k=0; k < r.n; k++){
+    printf("RETOURNER PIECE :\n");
+
+    a_retourner = creer_l_cellule();
+    /* les cases jusqu'auquelles il faut retourner */
+    voisins(p, coup, coul_j, coul_j);
+
+    /* recuperation des cases possibles */
+    for(i=0; i < p->n; i++){
+        for(j=0; j < p->n; j++){
+            if(p->mat[i][j] == RET){
+                printf(" %d et %d\n", i+1, j+'A');
+                a_retourner = ajouter_cellule(a_retourner, i, j);
+            }
+        }
+    }
+
+    /* on retourne */
+    for (k=0; k < a_retourner.n; k++){
         
         /* retrouver la direction */
-        if (r.cel[k].x > c1.x){
+        if (a_retourner.cel[k].x > coup.x){
             dir_x = 1;
-        } else if (r.cel[k].x == c1.x){
+        } else if (a_retourner.cel[k].x == coup.x){
             dir_x = 0;
         } else {
             dir_x = -1;
         }
         
-        if (r.cel[k].y > c1.y){
+        if (a_retourner.cel[k].y > coup.y){
             dir_y = 1;
-        } else if (r.cel[k].y == c1.y){
+        } else if (a_retourner.cel[k].y == coup.y){
             dir_y = 0;
         } else {
             dir_y = -1;
@@ -220,14 +237,43 @@ void retourner_pieces(plateau *p, cellule c1, l_cellule r){
         /* printf("dir_x = %d, dir_y = %d\n", dir_x, dir_y); */
     
         /* retournement des pièces */
-        for (i = c1.x, j = c1.y;
-             i != r.cel[k].x || j != r.cel[k].y;
+        for (i = coup.x, j = coup.y;
+             i != a_retourner.cel[k].x || j != a_retourner.cel[k].y;
              i += dir_x, j += dir_y){
             
-            p->mat[i][j] = coul;
+            p->mat[i][j] = coul_j;
         }
-
-        
+        p->mat[i][j] = coul_j;
     }
+
+    return p;
 }
+
+
+int couleur_gagnante(plateau *p){
+    int i, j, noir = 0, blanc = 0;
+
+    for(i = 0; i < p->n; i++){
+        for(j = 0; j < p->n; j++){
+            if(p->mat[i][j] == NOIR){ 
+                noir++;
+            }
+            if (p->mat[i][j] == BLANC){
+                blanc++;
+            }
+        }
+    }
+
+    if (blanc > noir){
+        return BLANC;
+    }
+
+    if (noir > blanc){
+        return NOIR;
+    }
+
+    return 0;
+    
+}
+               
 #endif
