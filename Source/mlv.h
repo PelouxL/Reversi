@@ -3,6 +3,8 @@
 
 #include"plateau.h"
 #include"cellule.h"
+#include"jeu.h"
+#include <MLV/MLV_all.h>
 
 #define LX 1280
 #define LY 720
@@ -20,9 +22,9 @@ int verif(bouton bouton, int coord_x, int coord_y);
 
 int clic_bouton(bouton bout[], int lng);
 
-void cree_bouton(bouton *bouton, char *message, int x, int y);
+void cree_bouton(bouton *bouton, char *message, int x, int y, MLV_Font *police);
 
-void afficher_text(bouton bouton);
+void afficher_text(bouton bouton, MLV_Font *police);
 
 void affichage_mlv(plateau *p);
 

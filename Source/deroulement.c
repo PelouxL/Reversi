@@ -94,9 +94,12 @@ int jeu_terminal(plateau *p){
 
 void jeu_mlv(plateau *p){
     cellule coup;
-    int j_actuel, gagnant;
+    int j_actuel, gagnant, text_width, text_height;
     int tour = 0, valide = 0, fin = 0;
     bouton boutons[2];
+    MLV_Font *police;
+
+    police = MLV_load_font("Letters for Learners.ttf", 150);
 
     p = cellules_depart(p);
     p = demande_premier_joueur(boutons, p);
@@ -118,7 +121,6 @@ void jeu_mlv(plateau *p){
                 }
             }
             inserer_pions(p, coup.x, coup.y, p -> j_couleur);
-            affichage_mlv(p);
             valide = 0;
         }
         else{
@@ -126,7 +128,6 @@ void jeu_mlv(plateau *p){
             coup = choix_coup_ordi(p);
             inserer_pions(p, coup.x, coup.y, p -> ordi_couleur);
             printf("[%c - %d]\n", coup.x + 'A', coup.y);
-            affichage_mlv(p);
         }
         MLV_actualise_window();
     }
@@ -148,7 +149,6 @@ void jeu_mlv(plateau *p){
                 }
                 inserer_pions(p, coup.x, coup.y, p -> j_couleur);
                 retourner_pieces(p, coup);
-                affichage_mlv(p);
                 valide = 0;
             }
             else{
@@ -156,7 +156,6 @@ void jeu_mlv(plateau *p){
                 coup = choix_coup_ordi(p);
                 inserer_pions(p, coup.x, coup.y, p -> ordi_couleur);
                 retourner_pieces(p, coup);
-                affichage_mlv(p);
             }
         }
         p = remise_a_zero(p);
@@ -165,13 +164,26 @@ void jeu_mlv(plateau *p){
     gagnant = couleur_gagnante(p);
     
     if(gagnant == p->j_couleur){
-        printf("Bravo vous avez gagné(e) !\n");
+        MLV_get_size_of_adapted_text_box_with_font("VOUS AVEZ GAGNE !", police, 10, &text_width, &text_height);
+        MLV_draw_adapted_text_box_with_font( (LX - text_width) / 2, (LY - text_height) / 2, "VOUS AVEZ GAGNE !", police, MLV_ALPHA_TRANSPARENT, 0, MLV_COLOR_BLACK, MLV_rgba(235, 193, 132, 255), MLV_TEXT_CENTER);
+        MLV_actualise_window();
+        MLV_wait_seconds(3);
+         
+        
     }else if(gagnant == p->ordi_couleur){
-        printf("Aïe ! Vous avez perdu(e) !\n");
+        MLV_get_size_of_adapted_text_box_with_font("VOUS AVEZ PERDU !", police, 10, &text_width, &text_height);
+        MLV_draw_adapted_text_box_with_font( (LX - text_width) / 2, (LY - text_height) / 2, "VOUS AVEZ PERDU !", police, MLV_ALPHA_TRANSPARENT, 0, MLV_COLOR_BLACK, MLV_rgba(235, 193, 132, 255), MLV_TEXT_CENTER);
+        MLV_actualise_window();
+        MLV_wait_seconds(3);
+        
     }else{
-        printf("Egalité !\n");
+        MLV_get_size_of_adapted_text_box_with_font("EGALITE !", police, 10, &text_width, &text_height);
+        MLV_draw_adapted_text_box_with_font( (LX - text_width) / 2, (LY - text_height) / 2, "EGALITE !", police, MLV_ALPHA_TRANSPARENT, 0, MLV_COLOR_BLACK, MLV_rgba(235, 193, 132, 255), MLV_TEXT_CENTER);
+        MLV_actualise_window();
+        MLV_wait_seconds(3);
     }
 
+    MLV_free_font(police);
     MLV_actualise_window();
     MLV_free_window();
 }

@@ -1,6 +1,4 @@
 #include "mlv.h"
-#include "jeu.h"
-#include <MLV/MLV_all.h>
 
 #define CASES 60
 #define ESPACEMENT 0 /* ça me servait pour faire un espace entres les cases. Ici y'a pas d'espace mais je le garde pour la suite si on a besoin, on aura juste a modifier le nombre */
@@ -26,9 +24,9 @@ int clic_bouton(bouton bout[], int lng) {
     return i;
 }
 
-void cree_bouton(bouton *bouton, char *message, int x, int y){
+void cree_bouton(bouton *bouton, char *message, int x, int y, MLV_Font *police){
     int largeur, hauteur;
-    MLV_get_size_of_adapted_text_box(message, 10, &largeur, &hauteur);
+    MLV_get_size_of_adapted_text_box_with_font(message, police, 10, &largeur, &hauteur);
     bouton -> x = x - largeur/2 + 1;
     bouton -> y = y;
     bouton -> hauteur = hauteur;
@@ -36,15 +34,18 @@ void cree_bouton(bouton *bouton, char *message, int x, int y){
     strcpy(bouton -> txt, message);    
 }
 
-void afficher_text(bouton bouton){
-    MLV_draw_adapted_text_box(bouton.x, bouton.y, bouton.txt, 10, MLV_COLOR_WHITE, MLV_COLOR_WHITE, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
+void afficher_text(bouton bouton, MLV_Font *police){
+    MLV_draw_adapted_text_box_with_font(bouton.x, bouton.y, bouton.txt, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_WHITE, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
 }
 
 void affichage_mlv(plateau *p){
     int i, j, x, y, l_p, h_p, radius, base, contour_x, contour_y, taille_contour, text_x, text_y;
     char *text_l[] = {"A", "B", "C", "D", "E", "F", "G", "H"};
+    MLV_Font *police;
 
-    MLV_clear_window(MLV_COLOR_BLACK);
+    police = MLV_load_font("Letters for Learners.ttf", 30);
+
+    MLV_clear_window(MLV_rgba(2, 9, 2, 255));
 
     /* taille plateau de jeu */
     base = p -> n * (CASES + ESPACEMENT);
@@ -59,7 +60,7 @@ void affichage_mlv(plateau *p){
     taille_contour = base + 2 * CONTOUR;
 
     /* dessin contour du plateau */
-    MLV_draw_filled_rectangle(contour_x, contour_y, taille_contour, taille_contour, MLV_rgba(81, 60, 44, 250));
+    MLV_draw_filled_rectangle(contour_x, contour_y, taille_contour, taille_contour, MLV_rgba(50, 35, 19, 250));
 
     /* affichage de toutes les cases */
     for(i = 0; i < p -> n; i++){
@@ -69,10 +70,10 @@ void affichage_mlv(plateau *p){
             radius = 25;
 
             /* couleur cases */
-            MLV_draw_filled_rectangle(x, y, CASES, CASES, MLV_rgba(77, 161, 103, 250));
+            MLV_draw_filled_rectangle(x, y, CASES, CASES, MLV_rgba(26, 126, 26, 250));
             
             /* couleur contour cases */
-            MLV_draw_rectangle(x, y, CASES, CASES, MLV_COLOR_GREY);
+            MLV_draw_rectangle(x, y, CASES, CASES, MLV_rgba(155, 155, 155, 255));
 
             /* affichage des pions */
             if(p -> mat[i][j] == 1){
@@ -81,23 +82,23 @@ void affichage_mlv(plateau *p){
                 MLV_draw_filled_circle(x + CASES / 2, y + CASES / 2, radius, MLV_COLOR_WHITE);
             }
             else if(p -> mat[i][j] == 10){
-                MLV_draw_filled_circle(x + CASES / 2, y + CASES / 2, radius / 2, MLV_COLOR_GREY);
+                MLV_draw_filled_circle(x + CASES / 2, y + CASES / 2, radius / 2, MLV_rgba(155, 155, 155, 150));
             }                
         }
     }
 
     /* affichage texte : 1 - 8 */
     for(i = 0; i < p -> n; i++){
-        text_x = l_p - TEXT - CONTOUR;
-        text_y = h_p + i * (CASES + ESPACEMENT) + (CONTOUR / 2);
-        MLV_draw_adapted_text_box(text_x, text_y, "%d", 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_WHITE, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER, i + 1);
+        text_x = l_p - TEXT - CONTOUR - 5;
+        text_y = h_p + i * (CASES + ESPACEMENT) + (CONTOUR / 2) - 5;
+        MLV_draw_adapted_text_box_with_font(text_x, text_y, "%d", police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_WHITE, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER, i + 1);
     }
 
     /* affichage texte : A - H */
     for(i = 0; i < p -> n; i++){
         text_x = l_p + i * (CASES + ESPACEMENT) + (CONTOUR / 2);
         text_y = h_p + base + TEXT;
-        MLV_draw_adapted_text_box(text_x, text_y, text_l[i], 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_WHITE, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER, i + 1);
+        MLV_draw_adapted_text_box_with_font(text_x, text_y, text_l[i], police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_WHITE, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER, i + 1);
     }
     
     MLV_actualise_window();
@@ -159,18 +160,21 @@ plateau *demande_premier_joueur(bouton bouton[], plateau *p){
     int text_width, text_height, x, i, pressed;
     char *nom_bouton[] = {"BLANC", "NOIR"};
 
-    MLV_clear_window(MLV_COLOR_BLACK);
+    MLV_Font *police;
 
-    MLV_get_size_of_adapted_text_box("Choisissez votre couleur de pion", 10, &text_width, &text_height);
-    MLV_draw_adapted_text_box( (LX - text_width) / 2, 50, "Choisissez votre couleur de pion", 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_WHITE, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
+    MLV_clear_window(MLV_rgba(2, 9, 2, 255));
+
+    police = MLV_load_font("Letters for Learners.ttf", 100);
+
+    MLV_get_size_of_adapted_text_box_with_font("Choisissez votre couleur de pion", police, 10, &text_width, &text_height);
+    MLV_draw_adapted_text_box_with_font( (LX - text_width) / 2, 50, "Choisissez votre couleur de pion", police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_WHITE, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
 
     x = 0;
     for(i = 0; i < 2; i++){
-        cree_bouton(&bouton[i], nom_bouton[i], LX / 2 + x - 150, LY / 2);
-        afficher_text(bouton[i]);
-        x += 150 * 2;
-    }
-    MLV_actualise_window();
+        cree_bouton(&bouton[i], nom_bouton[i], LX / 2 + x - 250, LY / 2, police);
+        afficher_text(bouton[i], police);
+        x += 250 * 2;
+    }    MLV_actualise_window();
     
     pressed = clic_bouton(bouton, 4);
     printf("pressed = %d\n", pressed);
