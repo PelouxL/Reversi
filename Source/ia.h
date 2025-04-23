@@ -27,4 +27,9 @@ arbre ajouter_fils(arbre a, int i, int j);
 void affiche_arbre(arbre a);
 /* affiche l'arbre ainsi que ses fils */
 
+arbre creer_arbre(plateau *p, int prof);
+
+plateau *eval(arbre a);
+
+
 #endif

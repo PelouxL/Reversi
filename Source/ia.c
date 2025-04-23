@@ -36,37 +36,22 @@ arbre creer_noeud(plateau *p){
     return a;
 }
 
-/* prof = 2
-arbre creer_arbre(plateau *p){
-    arbre a, courant; 
-    int i=0;
-    
-
-    a = creer_noeud(p);  racine 
-    a = descendance(a);
-
-    courant = a->descendance;
-    
-    while (courant != NULL){
-        descendance(courant);
-        courant = courant->suivant;
-    }
-
-    return a;
-    } */
-
+/* fonction permettant de creer un arbre avec une profondeur donne */
 arbre creer_arbre_aux(arbre a, int prof, int i){
     arbre courant = NULL;
 
-    if (i == prof){
+    if (i > prof){
         return NULL;
     }
     
     a = descendance(a);
     courant = a->descendance;
+    i += 1;
     
     while (courant != NULL){
-        creer_arbre_aux(courant, prof, ++i);
+        /* printf("profondeur = %d, i = %d\n", prof, i); */
+        creer_arbre_aux(courant, prof, i);
+        courant = courant->suivant;
     }
     return a;
 }
@@ -82,7 +67,7 @@ arbre creer_arbre(plateau *p, int prof){
 
 
 arbre descendance(arbre a){
-    int i, j, acc= 0;
+    int i, j/* , acc= 0 */;
     
     if (a->profondeur % 2 == 0){
         coups_possibles(a->p, a->p->ordi_couleur);
@@ -95,7 +80,7 @@ arbre descendance(arbre a){
             if(a->p->mat[i][j] == COUP){
 
                 a = ajouter_fils(a, i, j);
-                printf("ajout du fils %d\n", acc++);
+                /* printf("ajout du fils %d\n", acc++); */
                 
             
             }
@@ -104,6 +89,56 @@ arbre descendance(arbre a){
     return a;
 }
 
+cellule moyenne_arbre(arbre a){
+    arbre courant = a->descendance;
+    cellule c, c_tmp;
+
+    c.x = 0;
+    c.y = 0;
+    
+    if(a->descendance == NULL){
+        c.x = a->points;
+        c.y = 1;
+    } else {
+        
+        while(courant != NULL){
+            c_tmp = moyenne_arbre(courant);
+            c.x += c_tmp.x;
+            c.y += c_tmp.y;
+            courant = courant->suivant;
+        }
+        
+    }
+    
+    return c;
+    
+}
+
+plateau *eval(arbre a){
+    arbre courant = a->descendance;
+    cellule c;
+    float moy, moy_tmp;
+    plateau *p;
+    
+    c = moyenne_arbre(courant);
+    moy = c.x/c.y;
+    p = courant->p;
+    courant = courant->suivant;
+    
+    while(courant != NULL){
+        c = moyenne_arbre(courant);
+        moy_tmp = c.x/c.y;
+        /* printf("voici la valeur de la moyenne de l'arabe %f, moy ac = %f\n", moy_tmp, moy);  */
+        if(moy_tmp > moy || (moy_tmp == moy && rand()%2 == 1)){
+            moy = moy_tmp;
+            p = courant->p;
+        }       
+        courant = courant->suivant;
+    }
+
+    return p;
+}
+          
 void affiche_arbre(arbre a){
     arbre courant = a->descendance;
 
@@ -112,7 +147,7 @@ void affiche_arbre(arbre a){
     }
     
     affiche_plateau(a->p);
-    printf("Score : %d\n", a->points);
+    /* printf("Score : %d\n", a->points); */
         
     while (courant != NULL){
         affiche_arbre(courant);       

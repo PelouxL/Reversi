@@ -13,5 +13,6 @@
 #include "jeu.h"
 #include "deroulement.h"
 #include "joueur.h"
+#include "ia.h"
 
 #endif

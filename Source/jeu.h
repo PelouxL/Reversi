@@ -10,7 +10,7 @@ void viderBuffer();
 plateau *cellules_depart(plateau *p);
 /* nom temporaire, cette fonction permet d'avoir es 4 cellules de base */
 
-plateau *retourner_pieces(plateau *p, cellule coup);
+int retourner_pieces(plateau *p, cellule coup);
 /* Retourne les pieces du plateau dont les coordonnees ont ete passees en parametres dans la couleur indiquee */
 
 int couleur_adverse(int couleur);

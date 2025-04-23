@@ -32,16 +32,16 @@ int couleur_adverse(int couleur){
 
 /* COUP */
 int reste_coup(plateau *p){
-    int i, j;
+    int i, j, acc = 0;
 
     for (i=0; i < p->n; i++){
         for (j=0; j < p->n; j++){
             if (p->mat[i][j] == COUP){
-                return 1;
+                acc++;
             }
         }
     }
-    return 0;
+    return acc;
 }
 
 void afficher_coup(plateau *p){
@@ -142,15 +142,15 @@ plateau *coups_possibles(plateau *p, int coul_j){
     cellule c;
     int i, j;
 
-    printf("COUP POSSIBLES :\n");
+    /* printf("COUP POSSIBLES :\n"); */
     for (i=0; i < p->n; i++){
         for (j=0; j < p->n; j++){
 
             if (p->mat[i][j] == coul_j){ /* la cases contient un pion du joueur actuel */
-                printf("Je regarde pour %d%c : \n", i+1, j+'A');
+                /* printf("Je regarde pour %d%c : \n", i+1, j+'A'); */
                 c.x = i;
                 c.y = j;
-                printf(" voici la cases regarder %d et %d et sa ouleur %d\n", i, j, p->mat[i][j]);
+                /* printf(" voici la cases regarder %d et %d et sa ouleur %d\n", i, j, p->mat[i][j]); */
                 voisins(p, c, coul_j, VIDE);
             }         
         }
@@ -191,14 +191,16 @@ cellule choix_coup_ordi(plateau *p){
     return coup;
 }
 
-plateau *retourner_pieces(plateau *p, cellule coup){
+int retourner_pieces(plateau *p, cellule coup){
 
     int i, j, k,
         coul_j = p->mat[coup.x][coup.y],
-        dir_x, dir_y;
+        dir_x, dir_y,
+        acc = 0,
+        points = 0;
     l_cellule a_retourner;
 
-    printf("RETOURNER PIECE :\n");
+    /* printf("RETOURNER PIECE :\n"); */
 
     a_retourner = creer_l_cellule();
     /* les cases jusqu'auquelles il faut retourner */
@@ -208,8 +210,9 @@ plateau *retourner_pieces(plateau *p, cellule coup){
     for(i=0; i < p->n; i++){
         for(j=0; j < p->n; j++){
             if(p->mat[i][j] == RET){
-                printf(" %d et %d\n", i+1, j+'A');
+                /* printf(" %d et %d\n", i+1, j+'A'); */
                 a_retourner = ajouter_cellule(a_retourner, i, j);
+                acc++;
             }
         }
     }
@@ -242,11 +245,12 @@ plateau *retourner_pieces(plateau *p, cellule coup){
              i += dir_x, j += dir_y){
             
             p->mat[i][j] = coul_j;
+            points++;
         }
         p->mat[i][j] = coul_j;
     }
 
-    return p;
+    return points - acc + 1;
 }
 
 

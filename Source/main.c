@@ -9,9 +9,9 @@ int main(){
  
   p = initialisation_plateau(n);
 
-  MLV_create_window("Reversi", "Reversi", LX, LY);
-  /*jeu_terminal(p);*/
-  jeu_mlv(p);
+  /* MLV_create_window("Reversi", "Reversi", LX, LY); */
+  jeu_terminal(p);
+  /* jeu_mlv(p); */
   vider_plateau(p);
     
   exit(EXIT_SUCCESS);

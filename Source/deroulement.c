@@ -2,11 +2,10 @@
 #define _DEROULEMENT_C_
 
 #include "deroulement.h"
-#include "mlv.h"
-#include "joueur.h"
 
 int jeu_terminal(plateau *p){
     cellule coup;
+    arbre a;
     int tour = 0, valide = 0, fin = 0, j_actuel, gagnant;
     
     p = cellules_depart(p);
@@ -72,9 +71,9 @@ int jeu_terminal(plateau *p){
                 
             }else{
                 printf("Tour de l'ordi\n");
-                coup = choix_coup_ordi(p);
-                inserer_pions(p, coup.x, coup.y, p->ordi_couleur);
-                retourner_pieces(p, coup);
+                a = creer_arbre(p, 5);
+                 /* affiche_arbre(a); */
+                p = eval(a);
             }
         }
         p = remise_a_zero(p);
@@ -91,6 +90,7 @@ int jeu_terminal(plateau *p){
     }
     return 1;
 }
+
 
 void jeu_mlv(plateau *p){
     cellule coup;
