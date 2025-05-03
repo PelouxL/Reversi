@@ -3,8 +3,6 @@
 
 #include "cellule.h"
 #include "plateau.h"
-#include "jeu.h"
-
 cellule recuperer_coup(plateau *p);
 /* retourne une cellule que le joueur rentre a l main ( pour terminal )
    renvie -1 -1 si la cellule est pas bonne */

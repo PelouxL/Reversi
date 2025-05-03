@@ -1,5 +1,6 @@
 #ifndef _CELLULE_C_
 #define _CELLULE_C_
+
 #include "cellule.h"
 
 int est_l_c_vide(l_cellule l_c){

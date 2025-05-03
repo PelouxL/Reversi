@@ -3,10 +3,20 @@
 
 #include "deroulement.h"
 
+#include "jeu.h"
+#include "mlv.h"
+#include "joueur.h"
+#include "ia.h"
+#include "eval.h"
+#include <limits.h>
+
 int jeu_terminal(plateau *p){
     cellule coup;
     arbre a;
-    int tour = 0, valide = 0, fin = 0, j_actuel, gagnant;
+    int tour = 0, valide = 0, fin = 0, j_actuel, gagnant, meilleur;
+    int **tab_points = NULL;
+
+    tab_points = init_tableau_points(p->n);
     
     p = cellules_depart(p);
     p = commencer_la_partie(p);
@@ -65,15 +75,18 @@ int jeu_terminal(plateau *p){
                 }
                 
                 p = jouer_coup_j(p, coup);
-                retourner_pieces(p, coup);
+                retourner_pieces(p, tab_points, coup);
                 
                 valide = 0;
                 
             }else{
                 printf("Tour de l'ordi\n");
-                a = creer_arbre(p, 5);
-                 /* affiche_arbre(a); */
-                p = eval(a);
+                a = creer_arbre(p, tab_points, 4);
+	
+		meilleur = alpha_beta(a, INT_MIN, INT_MAX);
+		printf("meilleur choix possible %d\n",meilleur); 
+		p = choix_alpha_beta(a);
+	
             }
         }
         p = remise_a_zero(p);
@@ -98,6 +111,9 @@ void jeu_mlv(plateau *p){
     int tour = 0, valide = 0, fin = 0;
     bouton boutons[2];
     MLV_Font *police;
+    int **tab_points = NULL;
+
+    tab_points = init_tableau_points(p->n);
 
     police = MLV_load_font("Letters for Learners.ttf", 150);
 
@@ -148,14 +164,14 @@ void jeu_mlv(plateau *p){
                     }
                 }
                 inserer_pions(p, coup.x, coup.y, p -> j_couleur);
-                retourner_pieces(p, coup);
+                retourner_pieces(p,tab_points, coup);
                 valide = 0;
             }
             else{
                 printf("Tour Ordi\n");
                 coup = choix_coup_ordi(p);
                 inserer_pions(p, coup.x, coup.y, p -> ordi_couleur);
-                retourner_pieces(p, coup);
+                retourner_pieces(p, tab_points, coup);
             }
         }
         p = remise_a_zero(p);

@@ -1,7 +1,8 @@
 #ifndef _DEROULEMENT_H_
 #define _DEROULEMENT_H_
 
-#include "main.h"
+#include "plateau.h"
+
 
 int jeu_terminal(plateau *p);
 

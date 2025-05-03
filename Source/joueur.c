@@ -3,6 +3,9 @@
 
 #include "joueur.h"
 
+
+#include "jeu.h"
+
 cellule recuperer_coup(plateau *p){
 
     char col;

@@ -1,4 +1,8 @@
+#ifndef _MLV_C_
+#define _MLV_C_
+
 #include "mlv.h"
+#include"jeu.h"
 
 #define CASES 60
 #define ESPACEMENT 0 /* ça me servait pour faire un espace entres les cases. Ici y'a pas d'espace mais je le garde pour la suite si on a besoin, on aura juste a modifier le nombre */
@@ -191,3 +195,5 @@ plateau *demande_premier_joueur(bouton bouton[], plateau *p){
     
     return p;
 }
+
+#endif

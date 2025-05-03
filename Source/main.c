@@ -1,3 +1,6 @@
+#ifndef _MAIN_C_
+#define _MAIN_C_
+
 #include "main.h"
 #include "time.h"
 
@@ -16,3 +19,5 @@ int main(){
     
   exit(EXIT_SUCCESS);
 }
+
+#endif

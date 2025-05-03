@@ -3,6 +3,9 @@
 
 #include "jeu.h"
 
+#include "ia.h"
+#include "eval.h"
+
 void viderBuffer(){
   int c = 0;
   while (c != '\n' && c != EOF)
@@ -191,7 +194,7 @@ cellule choix_coup_ordi(plateau *p){
     return coup;
 }
 
-int retourner_pieces(plateau *p, cellule coup){
+int retourner_pieces(plateau *p, int **tab_points, cellule coup){
 
     int i, j, k,
         coul_j = p->mat[coup.x][coup.y],
@@ -245,12 +248,17 @@ int retourner_pieces(plateau *p, cellule coup){
              i += dir_x, j += dir_y){
             
             p->mat[i][j] = coul_j;
-            points++;
+            points+= evaluation_position(tab_points, i, j);
         }
         p->mat[i][j] = coul_j;
     }
-
-    return points - acc + 1;
+    
+    if( points == 2){
+      points+= 2;
+    }else if( points >= 3){
+      points+= 3;
+    }
+    return points - acc;
 }
 
 

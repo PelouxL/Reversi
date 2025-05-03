@@ -1,3 +1,6 @@
+#ifndef _PLATEAU_C_
+#define _PLATEAU_C_
+
 #include "plateau.h"
 #include <unistd.h>
 #include "jeu.h"
@@ -80,8 +83,8 @@ void affiche_plateau(plateau *p){
   /****************************************/
   /* Penser a mettre un truc pour refresh */
   /****************************************/
-  if(system("clear") == 0){
-  }
+  /* if(system("clear") == 0){
+     } */
   
   /* ligne du dessus */
   printf("   ");
@@ -131,3 +134,5 @@ void affiche_plateau(plateau *p){
 void inserer_pions(plateau *p, int i, int j, int couleur){      
     p->mat[i][j] = couleur;
 }
+
+#endif

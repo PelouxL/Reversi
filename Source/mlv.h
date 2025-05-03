@@ -1,10 +1,9 @@
 #ifndef _MLV_H_
 #define _MLV_H_
 
+#include <MLV/MLV_all.h>
 #include"plateau.h"
 #include"cellule.h"
-#include"jeu.h"
-#include <MLV/MLV_all.h>
 
 #define LX 1280
 #define LY 720
