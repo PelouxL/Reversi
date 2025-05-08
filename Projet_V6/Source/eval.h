@@ -10,7 +10,7 @@
 #define BORD 5
 #define NEUTRE 1
 
-int evaluation_position(int **tab_points, l_cellule lc);
+int evaluation_position(int **tab_points, l_cellule bornes, cellule coup);
 /* evalue la position d'un pion et renvoie sa valeur */
 
 void mini_max(arbre a);

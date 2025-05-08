@@ -51,7 +51,6 @@ arbre creer_arbre_aux(plateau *p, arbre a, int **tab_points, int prof, int i){
     if (i > prof){
         return NULL;
     }
-
    
 
     /* on recupere la couleur */
@@ -60,7 +59,6 @@ arbre creer_arbre_aux(plateau *p, arbre a, int **tab_points, int prof, int i){
     } else {
         couleur = p->j_couleur;
     }
-    
     
 
     /* ajouter les fils */
@@ -85,8 +83,10 @@ arbre creer_arbre_aux(plateau *p, arbre a, int **tab_points, int prof, int i){
                 /* on recupere les coups possible en veillant a enlever ceux du tour precedent */
                 p_copie = remise_a_zero(p_copie);
                 p_copie = coups_possibles(p_copie, couleur);
-                
-                
+
+                /* calcul du poids */
+                calcul_points(courant, a, tab_points, p_copie);
+
                 /* on rappel creer_arbre_aux */
                 
                 creer_arbre_aux(p_copie, courant, tab_points, prof, i+1);
@@ -141,7 +141,7 @@ arbre ajouter_fils(arbre a, int **tab_points, int i, int j, plateau *p){
     /* on calcule le poids total des pieces retournees 
        ET on ajoute/retire des points selon le joueur */
 
-    poids = evaluation_position(tab_points, fils->bornes);   
+    poids = evaluation_position(tab_points, fils->bornes, fils->coup);   
     
     if (fils->profondeur % 2 == 1){
       fils->points =  a->points + poids;
@@ -161,6 +161,29 @@ arbre ajouter_fils(arbre a, int **tab_points, int i, int j, plateau *p){
     
     return a;
 }
+
+void calcul_points(arbre fils, arbre a, int **tab_points, plateau *p){
+    int acc, pos, 
+        poids = 0;
+
+    /* points position */
+    pos = evaluation_position(tab_points, fils->bornes, fils->coup);   
+    poids += pos;
+
+    /* points possibilités adverses */
+    acc = reste_coup(p);
+    acc *= 2;  
+
+    poids += acc;
+
+    /* points par rapport au père */
+    if (fils->profondeur % 2 == 1){
+        fils->points =  a->points + poids;
+      } else {
+        fils->points =  a->points  - poids;
+    }
+}
+
 
 void affiche_arbre(arbre a){
     arbre courant = a->descendance;

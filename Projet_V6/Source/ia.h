@@ -26,6 +26,8 @@ arbre descendance(arbre a, int **tab_points, plateau *p,  int prof, int k);
 
 arbre ajouter_fils(arbre a, int **tab_points, int i, int j, plateau *p);
 
+void calcul_points(arbre fils, arbre a, int **tab_points, plateau *p);
+
 void affiche_arbre(arbre a);
 /* affiche l'arbre ainsi que ses fils */
 

@@ -26,14 +26,14 @@ int est_bord(plateau *p, int i, int j){
 int **init_tableau_points(int n){
   int **tab_points = NULL, i, j;
   int tab[8][8] = {
-    {120, -25,  10,   5,   5,  10, -25, 120},
+    {150, -25,  10,   5,   5,  10, -25, 150},
     {-25, -50,  -2,  -2,  -2,  -2, -50, -25},
     { 10,  -2,   0,   0,   0,   0,  -2,  10},
     {  5,  -2,   0,   1,   1,   0,  -2,   5},
     {  5,  -2,   0,   1,   1,   0,  -2,   5},
     { 10,  -2,   0,   0,   0,   0,  -2,  10},
     {-25, -50,  -2,  -2,  -2,  -2, -50, -25},
-    {120, -25,  10,   5,   5,  10, -25, 120},
+    {150, -25,  10,   5,   5,  10, -25, 150},
   };
 
 
@@ -71,15 +71,42 @@ void liberer_tab(int **tab_points, int n){
   free(tab_points);
 }
 
-int evaluation_position(int **tab_points, l_cellule lc){
-  int i, acc = 0;
+int evaluation_position(int **tab_points, l_cellule bornes, cellule coup){
+  int i, j, k,
+    dir_x = 0, dir_y = 0, 
+    acc = 0;
 
-  for(i = 0; i < lc.n; i++){
-    acc += tab_points[lc.cel[i].x][lc.cel[i].y];
+  for (k=0; k < bornes.n; k++){
+      
+    /* retrouver la direction */
+    if (bornes.cel[k].x > coup.x){
+      dir_x = 1;
+    } else if (bornes.cel[k].x == coup.x){
+      dir_x = 0;
+    } else {
+      dir_x = -1;
+    }
+        
+    if (bornes.cel[k].y > coup.y){
+      dir_y = 1;
+    } else if (bornes.cel[k].y == coup.y){
+      dir_y = 0;
+    } else {
+      dir_y = -1;
+    }
+    
+    /* on calcule les points */
+    acc += tab_points[coup.x][coup.y]; /* on évite de compter le coup plusieurs fois */
+    for (i = coup.x + dir_x, j = coup.y + dir_y;
+         i != bornes.cel[k].x || j != bornes.cel[k].y;
+         i += dir_x, j += dir_y){
+            
+        acc += tab_points[bornes.cel[k].x][bornes.cel[k].y];
+    }
   }
-  
   return acc;
 }
+
 /*************************************************/
 /******************** MIN_MAX ********************/
 /*************************************************/

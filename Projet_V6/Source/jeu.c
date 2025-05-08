@@ -115,8 +115,6 @@ plateau *suite(plateau *p, cellule c_depart, int coul_adv, int dir_x, int dir_y,
 }
 
 
-
-
 plateau *voisins(plateau *p, cellule c_depart, int coul_j, int bout){
 
     int i, j, coul_adv;

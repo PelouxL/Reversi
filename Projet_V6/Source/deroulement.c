@@ -121,6 +121,7 @@ void jeu_mlv(plateau *p, int prof){
     cellule coup;
     int j_actuel, gagnant, text_width, text_height, meilleur;
     int tour = 0, valide = 0, fin = 0;
+    /*char text[50];*/
     bouton boutons[2];
     MLV_Font *police;
     int **tab_points = NULL;
@@ -186,16 +187,22 @@ void jeu_mlv(plateau *p, int prof){
             }
             else{
 
-	      a = creer_arbre(p, tab_points, prof);
+	            a = creer_arbre(p, tab_points, prof);
 	
-	      meilleur = alpha_beta(a, INT_MIN, INT_MAX);
-	      printf("meilleur choix possible %d\n",meilleur); 
-	      coup = choix_alpha_beta(a);
-              liberer_arbre(a);
+	            meilleur = alpha_beta(a, INT_MIN, INT_MAX);
+                printf("meilleur choix possible %d\n",meilleur);
+                
+                coup = choix_alpha_beta(a);
+                p = jouer_coup_j(p, coup, j_actuel);
+                bornes = bornes_pieces_a_retourner(p, coup);
+                retourner_pieces(bornes, p, p->ordi_couleur, coup);
+	            coup = choix_alpha_beta(a);
+                liberer_arbre(a);
 
-              p = jouer_coup_j(p, coup, j_actuel);
-              bornes = bornes_pieces_a_retourner(p, coup);
-              retourner_pieces(bornes, p, p->ordi_couleur, coup);
+                MLV_wait_milliseconds(500);
+                p = jouer_coup_j(p, coup, j_actuel);
+                bornes = bornes_pieces_a_retourner(p, coup);
+                retourner_pieces(bornes, p, p->ordi_couleur, coup);
             }
 	    
         }
