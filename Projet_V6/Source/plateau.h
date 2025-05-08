@@ -11,13 +11,13 @@
 #define RET 11
 
 typedef struct{
-  int **mat; /* matrice carre ? */
+  int **mat; 
   int n;
   int j_couleur;
   int ordi_couleur;
-}plateau; /* variable globale ? */
+}plateau;
 
-plateau *commencer_la_partie(plateau *p);
+plateau *commencer_la_partie(plateau *p, int *bot_vs_bot);
 
 plateau *initialisation_plateau(int n);
 

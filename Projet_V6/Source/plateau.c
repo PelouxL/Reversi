@@ -5,22 +5,28 @@
 #include <unistd.h>
 #include "jeu.h"
 
-plateau *commencer_la_partie(plateau *p){
+plateau *commencer_la_partie(plateau *p, int *bot_vs_bot){
     char commencer = 'A';
    
-    while( commencer != 'N' && commencer != 'O' ){
-        printf("Voulez vous commencer ? ( vous jouerez les pions noirs ) O ou N\n");
-        if( (scanf("%c", &commencer) != 1) && (commencer != 'O' || commencer != 'N' || commencer != 'n' || commencer != 'o')){
+    while( commencer != 'N' &&  commencer != 'n' && commencer != 'O'  && commencer != 'o' && commencer != 'B' && commencer != 'b'){
+        printf("Voulez vous commencer ? ( vous jouerez les pions noirs ) O ou N\n\nVous pouvez aussi faire affronter deux ordinateur B\n");
+        if( (scanf("%c", &commencer) != 1) && (commencer != 'O' || commencer != 'N' || commencer != 'n' || commencer != 'o'|| commencer != 'B' || commencer != 'b')){
             fprintf(stderr, "erreur veuillez rentrer O ou N pour commencer\n");
         }
         viderBuffer();
     }
-   
+
+    
+    
     if( commencer == 'O' || commencer == 'o'){
         p->j_couleur = NOIR;
-    }else{
+    }else if (commencer == 'N' || commencer == 'n'){
         p->j_couleur = BLANC;
+    }else{
+      p->j_couleur = rand()%2 + 1;
+      *bot_vs_bot = 1;
     }
+   
     p->ordi_couleur = couleur_adverse( p->j_couleur );
     return p;
 }
