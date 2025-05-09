@@ -31,6 +31,8 @@ Options :
 
 --bot : Lance le programme avec deux ia, l'une contre l'autre (--bot o/n)( optionnel )
 
+--algo : Selection de l'algorythme voulu( --algo m | mini_max, Alpha_beta de base )( optionnel )
+
 --help : Affiche le README sur le terminal ( optionnel )
 
 
