@@ -91,7 +91,7 @@ int jeu_terminal(plateau *p, int prof, int bot_vs_bot){
           bornes = bornes_pieces_a_retourner(p, coup);
           afficher_cel(bornes);
           retourner_pieces(bornes, p, p->j_couleur, coup);
-                    
+          liberer_l_cellule(bornes);  
           valide = 0;
     
         }else{
@@ -109,7 +109,7 @@ int jeu_terminal(plateau *p, int prof, int bot_vs_bot){
           p = jouer_coup_j(p, coup, j_actuel);
           bornes = bornes_pieces_a_retourner(p, coup);
           retourner_pieces(bornes, p, p->j_couleur, coup);
-
+          liberer_l_cellule(bornes);
           liberer_arbre(a_bis);
         }
               
@@ -127,7 +127,7 @@ int jeu_terminal(plateau *p, int prof, int bot_vs_bot){
         p = jouer_coup_j(p, coup, j_actuel);
         bornes = bornes_pieces_a_retourner(p, coup);
         retourner_pieces(bornes, p, p->ordi_couleur, coup);
-
+        liberer_l_cellule(bornes);
         liberer_arbre(a);
       }
     }
@@ -243,7 +243,7 @@ void jeu_mlv(plateau *p, int prof, int bot_vs_bot){
           inserer_pions(p, coup.x, coup.y, p -> j_couleur);
           bornes = bornes_pieces_a_retourner(p, coup);
           retourner_pieces(bornes, p, p->j_couleur, coup);
-                
+          liberer_l_cellule(bornes);
 	        valide = 0;
 	  
 
@@ -262,7 +262,7 @@ void jeu_mlv(plateau *p, int prof, int bot_vs_bot){
           p = jouer_coup_j(p, coup, j_actuel);
           bornes = bornes_pieces_a_retourner(p, coup);
           retourner_pieces(bornes, p, p->j_couleur, coup);
-
+          liberer_l_cellule(bornes);
           MLV_wait_milliseconds(500);
           liberer_arbre(a_bis);
         }
@@ -281,7 +281,7 @@ void jeu_mlv(plateau *p, int prof, int bot_vs_bot){
         bornes = bornes_pieces_a_retourner(p, coup);
         retourner_pieces(bornes, p, p->ordi_couleur, coup);
         coup = choix_alpha_beta(a);
-
+        liberer_l_cellule(bornes);
         liberer_arbre(a);
 	    }
     }

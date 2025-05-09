@@ -55,7 +55,7 @@ void affichage_mlv(plateau *p, int tour, int couleur){
     char text[100];
     MLV_Font *police;
 
-    police = MLV_load_font("Letters for Learners.ttf", 30);
+    police = MLV_load_font("./font/Letters for Learners.ttf", 30);
     MLV_clear_window(MLV_rgba(2, 9, 2, 255));
 
     /* taille plateau de jeu */
@@ -114,7 +114,7 @@ void affichage_mlv(plateau *p, int tour, int couleur){
     }
 
     /* affichage du score en direct */
-    police = MLV_load_font("Letters for Learners.ttf", 50);
+    police = MLV_load_font("./font/Letters for Learners.ttf", 50);
     sprintf(text, "Blanc : %d --------------- Noir : %d", score_blanc(p), score_noir(p));
     MLV_get_size_of_adapted_text_box_with_font(text, police, 10, &text_x, &text_y);
     MLV_draw_adapted_text_box_with_font((LX - text_x) / 2, 5, text, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_WHITE, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);   
@@ -156,7 +156,7 @@ plateau *demande_premier_joueur(bouton bouton[], plateau *p){
 
     MLV_clear_window(MLV_rgba(2, 9, 2, 255));
 
-    police = MLV_load_font("Letters for Learners.ttf", 100);
+    police = MLV_load_font("./font/Letters for Learners.ttf", 100);
 
     MLV_get_size_of_adapted_text_box_with_font("Choisissez votre couleur de pion", police, 10, &text_width, &text_height);
     MLV_draw_adapted_text_box_with_font( (LX - text_width) / 2, 50, "Choisissez votre couleur de pion", police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_WHITE, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);

@@ -215,7 +215,7 @@ void liberer_arbre(arbre a){
     liberer_arbre(courant);
     courant = suivant;
   }
-  
+  liberer_l_cellule(a->bornes);
   free(a);
   a = NULL;
 }
