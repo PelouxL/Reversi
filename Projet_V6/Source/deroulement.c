@@ -11,6 +11,7 @@
 #include <limits.h>
 #include <unistd.h>
 
+/* Lancement de la version terminal */
 int jeu_terminal(plateau *p, int prof, int bot_vs_bot){
   cellule coup;
   arbre a = NULL, a_bis = NULL;
@@ -19,9 +20,7 @@ int jeu_terminal(plateau *p, int prof, int bot_vs_bot){
   l_cellule bornes;
 
   tab_points = init_tableau_points(p->n);
-  
   p = cellules_depart(p);
-  
   p = commencer_la_partie(p, &bot_vs_bot);
 
   /********************************************/
@@ -29,7 +28,6 @@ int jeu_terminal(plateau *p, int prof, int bot_vs_bot){
   /********************************************/
   
   while(reste_coup(p) > 0){
-
       tour++;
       j_actuel = tour%2 + 1;
       
@@ -37,6 +35,7 @@ int jeu_terminal(plateau *p, int prof, int bot_vs_bot){
           
         /* Tour du joueur ou du deuxieme bot*/
         if(bot_vs_bot == 0){
+          /* Joueur vs Bot */
           while(valide != 1){
               affiche_plateau(p);
               printf("Vous avez le droit de jouez dans ces cellules ci-dessous :\n");
@@ -47,22 +46,22 @@ int jeu_terminal(plateau *p, int prof, int bot_vs_bot){
                   valide = 1;
               }          
           }
-          
+          /* Jouer le coup */
           p = jouer_coup_j(p, coup, j_actuel);
           valide = 0;
         }else{
-    
+          /* Bot vs Bot */
           coup = choix_coup_ordi(p);
           inserer_pions(p, coup.x, coup.y, p->j_couleur);
         }
       } else {
           /* Tour de l'ordi */
-          printf("Tour de l'ordi\n");
           coup = choix_coup_ordi(p);
           inserer_pions(p, coup.x, coup.y, p->ordi_couleur);
       }
 
   }
+
   /***************************************/
   /* Phase de placement du jeu principal */
   /***************************************/
@@ -74,8 +73,11 @@ int jeu_terminal(plateau *p, int prof, int bot_vs_bot){
     affiche_plateau(p);
     if ((fin = reste_coup(p))){
       if(j_actuel == p->j_couleur){
+
+        /* Tour du joueur ou du deuxieme bot */
         if(bot_vs_bot == 0){
-    
+
+          /* Joueur vs Bot */
           while(valide != 1){
             afficher_coup(p);
             coup = recuperer_coup(p);
@@ -84,6 +86,7 @@ int jeu_terminal(plateau *p, int prof, int bot_vs_bot){
             }    
           }
 
+          /* Jouer le coup */
           p = jouer_coup_j(p, coup, j_actuel);
           bornes = bornes_pieces_a_retourner(p, coup);
           afficher_cel(bornes);
@@ -92,15 +95,17 @@ int jeu_terminal(plateau *p, int prof, int bot_vs_bot){
           valide = 0;
     
         }else{
+
+          /* Bot vs Bot */
           a_bis = creer_arbre(p, tab_points, prof);
 
-          meilleur = alpha_beta(a_bis, INT_MIN, INT_MAX);
-          printf("meilleur choix possible %d\n",meilleur);
+          /* Calcul du meilleur coup */
+          alpha_beta(a_bis, INT_MIN, INT_MAX);
           affiche_plateau(p);  
           coup = choix_alpha_beta(a_bis);
           MLV_wait_milliseconds(700);
           
-
+          /* Jouer le coup */
           p = jouer_coup_j(p, coup, j_actuel);
           bornes = bornes_pieces_a_retourner(p, coup);
           retourner_pieces(bornes, p, p->j_couleur, coup);
@@ -109,15 +114,16 @@ int jeu_terminal(plateau *p, int prof, int bot_vs_bot){
         }
               
       }else{
-        printf("Tour de l'ordi \n");
+        /* Tour de l'ordi */
         a = creer_arbre(p, tab_points, prof);
 
+        /* Calcul du meilleur coup pour l'ordinateur */
         meilleur = alpha_beta(a, INT_MIN, INT_MAX);
         printf("meilleur choix possible %d\n",meilleur);
         affiche_plateau(p);
         coup = choix_alpha_beta(a);
 
-
+        /* Jouer le coup */
         p = jouer_coup_j(p, coup, j_actuel);
         bornes = bornes_pieces_a_retourner(p, coup);
         retourner_pieces(bornes, p, p->ordi_couleur, coup);
@@ -128,6 +134,7 @@ int jeu_terminal(plateau *p, int prof, int bot_vs_bot){
     p = remise_a_zero(p);
   }while(fin != 0);
 
+  /* Calcul du gagnant */
   gagnant = couleur_gagnante(p);
   
   liberer_tab(tab_points, 8);
@@ -142,7 +149,7 @@ int jeu_terminal(plateau *p, int prof, int bot_vs_bot){
   return 1;
 }
 
-
+/* Lancement de la version graphique */
 void jeu_mlv(plateau *p, int prof, int bot_vs_bot){
   cellule coup;
   int j_actuel, gagnant, text_width, text_height, meilleur;
@@ -154,9 +161,9 @@ void jeu_mlv(plateau *p, int prof, int bot_vs_bot){
   l_cellule bornes;
     
   tab_points = init_tableau_points(p->n);
-
   police = MLV_load_font("Letters for Learners.ttf", 150);
 
+  /* Si Bot vs Bot alors on ne demande pas de choisir une couleur */
   p = cellules_depart(p);
   if(bot_vs_bot == 0){
     p = demande_premier_joueur(boutons, p);
@@ -166,38 +173,51 @@ void jeu_mlv(plateau *p, int prof, int bot_vs_bot){
     p -> ordi_couleur = couleur_adverse( p -> j_couleur );
   }
     
+  /********************************************/
+  /* Phase de placement des 4 premiers jetons */
+  /********************************************/
+
   while(reste_coup(p) > 0){
     affiche_plateau(p);
-        
     tour++;
     j_actuel = tour % 2 + 1;
     affichage_mlv(p, j_actuel, p -> j_couleur);
         
     if(j_actuel == p -> j_couleur){
 
+      /* Tour du joueur ou du deuxieme bot */
       if(bot_vs_bot == 0){
-	      while(valide != 1){
-                
-	        coup = obtenir_coord(p);       
-	        if((coup.x != -1 && coup.y != -1) && p -> mat[coup.x][coup.y] == COUP){
-	          valide = 1;
-	        }
-	      }
+
+        /* Joueur vs Bot */
+        while(valide != 1){
+          afficher_coup(p);
+          coup = obtenir_coord(p);
+          if((coup.x != -1 && coup.y != -1) && p -> mat[coup.x][coup.y] == COUP){
+            valide = 1;
+          }
+        }
 	      inserer_pions(p, coup.x, coup.y, p -> j_couleur);
 	      valide = 0;
-	
+      
+      /* Bot vs Bot */  
       }else{
 	      coup = choix_coup_ordi(p);
 	      inserer_pions(p, coup.x, coup.y, p ->j_couleur);
 	      MLV_wait_milliseconds(500);
       }
     }else{
+
+      /* Tour Ordi */
       coup = choix_coup_ordi(p);
       inserer_pions(p, coup.x, coup.y, p -> ordi_couleur);
     }
    
     MLV_actualise_window();
   }
+
+  /***************************************/
+  /* Phase de placement du jeu principal */
+  /***************************************/
 
   do{
     affiche_plateau(p);
@@ -207,44 +227,49 @@ void jeu_mlv(plateau *p, int prof, int bot_vs_bot){
     affichage_mlv(p, j_actuel, p -> j_couleur);
     if((fin = reste_coup(p))){
 	    if(j_actuel == p -> j_couleur){
+
+        /* Tour du joueur ou du deuxieme bot */
 	      if(bot_vs_bot == 0){
-	        while(valide != 1){
-                
+
+          /* Joueur vs Bot */
+	        while(valide != 1){   
 	          coup = obtenir_coord(p);
-                    
             if((coup.x != -1 && coup.y != -1) && p -> mat[coup.x][coup.y] == COUP){
               valide = 1;
             }
           }
 	            
-                
+          /* Jouer le coup */
           inserer_pions(p, coup.x, coup.y, p -> j_couleur);
           bornes = bornes_pieces_a_retourner(p, coup);
           retourner_pieces(bornes, p, p->j_couleur, coup);
                 
 	        valide = 0;
 	  
+
 	      }else{
 	  
+          /* Bot vs Bot */
 	        a_bis = creer_arbre(p, tab_points, prof);
 
+          /* Calcul du meilleur coup */
           meilleur = alpha_beta(a_bis, INT_MIN, INT_MAX);
           printf("meilleur choix possible %d\n",meilleur);
           affiche_plateau(p);
               
+          /* Jouer le coup */
           coup = choix_alpha_beta(a_bis);
-
           p = jouer_coup_j(p, coup, j_actuel);
           bornes = bornes_pieces_a_retourner(p, coup);
           retourner_pieces(bornes, p, p->j_couleur, coup);
 
-            
           MLV_wait_milliseconds(500);
           liberer_arbre(a_bis);
         }
 	  
 	    }else{
 
+        /* Tour de l'ordi */
         a = creer_arbre(p, tab_points, prof);
         
         meilleur = alpha_beta(a, INT_MIN, INT_MAX);
@@ -265,6 +290,7 @@ void jeu_mlv(plateau *p, int prof, int bot_vs_bot){
     
   liberer_tab(tab_points, 8);
      
+  /* Calcul du gagnant */
   gagnant = couleur_gagnante(p);
 
   if(bot_vs_bot == 0){

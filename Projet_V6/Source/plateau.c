@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include "jeu.h"
 
+/* Permet de choisir la couleur voulue sous version terminal */
 plateau *commencer_la_partie(plateau *p, int *bot_vs_bot){
     char commencer = 'A';
 
@@ -13,9 +14,9 @@ plateau *commencer_la_partie(plateau *p, int *bot_vs_bot){
       p->ordi_couleur = couleur_adverse(p->j_couleur);
     } else {
    
-      while( commencer != 'N' &&  commencer != 'n' && commencer != 'O'  && commencer != 'o' /*&& commencer != 'B' && commencer != 'b'*/){
-          printf("Voulez vous commencer ? ( vous jouerez les pions noirs ) O ou N\n"); /* \nVous pouvez aussi faire affronter deux ordinateur B\n*/
-          if (scanf("%c", &commencer) != 1 || (commencer != 'O' && commencer != 'N' && commencer != 'n' && commencer != 'o'/*|| commencer != 'B' || commencer != 'b'*/)){
+      while( commencer != 'N' &&  commencer != 'n' && commencer != 'O'  && commencer != 'o'){
+          printf("Voulez vous commencer ? ( vous jouerez les pions noirs ) O ou N\n");
+          if (scanf("%c", &commencer) != 1 || (commencer != 'O' && commencer != 'N' && commencer != 'n' && commencer != 'o')){
             fprintf(stderr, "erreur veuillez rentrer O ou N pour commencer\n");
           }
           viderBuffer();
@@ -23,18 +24,16 @@ plateau *commencer_la_partie(plateau *p, int *bot_vs_bot){
 
       if( commencer == 'O' || commencer == 'o'){
         p->j_couleur = NOIR;
-      }else /*(commencer == 'N' || commencer == 'n')*/{
+      }else{
         p->j_couleur = BLANC;
-      }/*else{
-        p->j_couleur = rand()%2 + 1;
-        *bot_vs_bot = 1;
-      }*/
+      }
    
       p->ordi_couleur = couleur_adverse( p->j_couleur );
     }
     return p;
 }
 
+/* Initialisation plateau */
 plateau * initialisation_plateau(int n){
   plateau *p = NULL;
   int i;
@@ -73,21 +72,7 @@ plateau * initialisation_plateau(int n){
   return p;
 }
 
-
-void restaurer_plateau(plateau *dest, plateau * src){
-    int i, j;
-    if (dest->n != src->n) return;  
-
-    for (i = 0; i < dest->n; i++) {
-        for (j = 0; j < dest->n; j++) {
-            dest->mat[i][j] = src->mat[i][j];
-        }
-    }
-
-    dest->j_couleur = src->j_couleur;
-    dest->ordi_couleur = src->ordi_couleur;
-}
-
+/* Permet de free entièrement un plateau */
 void vider_plateau(plateau *p){
   int i;
   
@@ -101,25 +86,24 @@ void vider_plateau(plateau *p){
   p = NULL; 
 }
 
+/* Affichage du plateau */
 void affiche_plateau(plateau *p){
   int i, j;
 
-  /****************************************/
-  /* Penser a mettre un truc pour refresh */
-  /****************************************/
+  /* Clear de la fenêtre pendant la partie pour avoir qu'un seul plateau visible */
   if(system("clear") == 0){
      }
   
-  /* ligne du dessus */
+  /* Ligne du dessus */
   printf("   ");
   for(i = 0 ; i <= p->n*2 ; i++){
     printf("_");
   }
   printf("\n");
 
-  /* affichage des cellules du plateau */
+  /* Affichage des cellules du plateau */
   for( i = 0 ; i < p->n ; i++ ){
-    printf("%d | ", i+1); /* affichage des entiers des coordonnees des cellules */
+    printf("%d | ", i+1); /* Affichage des entiers des coordonnees des cellules */
     for( j = 0 ; j < p -> n ; j++){
         
         switch(p->mat[i][j]){    
@@ -140,12 +124,12 @@ void affiche_plateau(plateau *p){
     printf("|\n");  
   }
 
-  /* affichage de la ligne du dessous */
+  /* Affichage de la ligne du dessous */
   printf("   ");
   for( i = 0 ; i <= p->n*2 ; i++ ){
     printf("_");
   }
-  /* affichage des lettres pour les coordonnees des cellules */
+  /* Affichage des lettres pour les coordonnees des cellules */
   printf("\n    ");
   for(i = 0 ; i < p->n; i++){
     printf("%c ", 'A'+i);
@@ -154,7 +138,7 @@ void affiche_plateau(plateau *p){
 }
 
 
-/* permet de changer la couleur d'un pion */
+/* Permet d'insérer un pion */
 void inserer_pions(plateau *p, int i, int j, int couleur){      
     p->mat[i][j] = couleur;
 }

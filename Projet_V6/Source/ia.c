@@ -5,6 +5,7 @@
 #include "eval.h"
 #include "joueur.h"
 
+/* Permet de copier un plateau */
 plateau *copie_plateau(plateau *p){
 
     int i, j;
@@ -24,6 +25,7 @@ plateau *copie_plateau(plateau *p){
     return pc;
 }
 
+/* Crée un noeud */
 arbre creer_noeud(){
     arbre a = NULL;
     if( ( a = (arbre) malloc (sizeof(noeud))) == NULL){
@@ -41,7 +43,7 @@ arbre creer_noeud(){
     return a;
 }
 
-
+/* Crée un arbre en profondeur */
 arbre creer_arbre_aux(plateau *p, arbre a, int **tab_points, int prof, int i){
     arbre courant = NULL;
     int couleur;
@@ -102,6 +104,7 @@ arbre creer_arbre_aux(plateau *p, arbre a, int **tab_points, int prof, int i){
     return a;
 }
 
+/* Crée un arbre */
 arbre creer_arbre(plateau *p, int **tab_points, int prof){
     arbre a;
     
@@ -110,9 +113,7 @@ arbre creer_arbre(plateau *p, int **tab_points, int prof){
     return a;
 }
 
-
-          
-
+/* Ajoute un fils a l'arbre */
 arbre ajouter_fils(arbre a, int **tab_points, int i, int j, plateau *p){
     arbre fils = NULL, courant = a->descendance;
     int couleur, poids;
@@ -162,6 +163,7 @@ arbre ajouter_fils(arbre a, int **tab_points, int i, int j, plateau *p){
     return a;
 }
 
+/* Calcul le poids d'un fils */
 void calcul_points(arbre fils, arbre a, int **tab_points, plateau *p){
     int acc, pos, 
         poids = 0;
@@ -184,7 +186,7 @@ void calcul_points(arbre fils, arbre a, int **tab_points, plateau *p){
     }
 }
 
-
+/* Affiche un arbre */
 void affiche_arbre(arbre a){
     arbre courant = a->descendance;
 
@@ -200,6 +202,7 @@ void affiche_arbre(arbre a){
     
 }
 
+/* Libère un arbre */
 void liberer_arbre(arbre a){
   arbre courant = a->descendance, suivant = NULL;
 

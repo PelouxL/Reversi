@@ -10,6 +10,7 @@
 #define COUP 10
 #define RET 11
 
+/* Structure Plateau */
 typedef struct{
   int **mat; 
   int n;
@@ -17,16 +18,19 @@ typedef struct{
   int ordi_couleur;
 }plateau;
 
+/* Permet de choisir la couleur voulue sous version terminal */
 plateau *commencer_la_partie(plateau *p, int *bot_vs_bot);
 
+/* Initialisation plateau */
 plateau *initialisation_plateau(int n);
 
-void restaurer_plateau(plateau *dest, plateau * src);
+/* Permet de free entièrement un plateau */
+void vider_plateau(plateau *p);
 
+/* Affichage du plateau */
 void affiche_plateau(plateau *p);
 
+/* Permet d'insérer un pion */
 void inserer_pions(plateau *p, int i, int j, int couleur);
-
-void vider_plateau(plateau *p);
 
 #endif

@@ -3,9 +3,10 @@
 
 #include "plateau.h"
 
-
+/* Lancement de la version terminal */
 int jeu_terminal(plateau *p, int prof, int bot_vs_bot);
 
+/* Lancement de la version graphique */
 void jeu_mlv(plateau *p, int prof, int bot_vs_bot);
 
 #endif

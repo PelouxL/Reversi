@@ -4,11 +4,13 @@
 #include "mlv.h"
 #include"jeu.h"
 
-#define CASES 60
-#define ESPACEMENT 0 /* ça me servait pour faire un espace entres les cases. Ici y'a pas d'espace mais je le garde pour la suite si on a besoin, on aura juste a modifier le nombre */
-#define CONTOUR 35
-#define TEXT 50 /* ça correspondra à l'espace entre le plateau et le texte */
+#define CASES 60 /* Taille cases */
+#define ESPACEMENT 0 /* Espace entre les cases */
+#define CONTOUR 35 /* Taille contour */
+#define TEXT 50 /* Espace entre le plateau et le texte */
 
+
+/* Fonction qui verifie si le clic de la souris est dans le bouton */
 int verif(bouton bouton, int coord_x, int coord_y){
     if((coord_x > bouton.x && coord_x < bouton.x + bouton.largeur) && (coord_y > bouton.y && coord_y < bouton.y + bouton.hauteur)){
         return 1;
@@ -16,6 +18,7 @@ int verif(bouton bouton, int coord_x, int coord_y){
     return 0;
 }
 
+/* Fonction qui verifie si le clic de la souris est dans un des boutons et retour la valeur */
 int clic_bouton(bouton bout[], int lng) {
     int s_x, s_y, i;
     
@@ -28,6 +31,7 @@ int clic_bouton(bouton bout[], int lng) {
     return i;
 }
 
+/* Fonction qui cree un bouton */
 void cree_bouton(bouton *bouton, char *message, int x, int y, MLV_Font *police){
     int largeur, hauteur;
     MLV_get_size_of_adapted_text_box_with_font(message, police, 10, &largeur, &hauteur);
@@ -38,11 +42,13 @@ void cree_bouton(bouton *bouton, char *message, int x, int y, MLV_Font *police){
     strcpy(bouton -> txt, message);    
 }
 
+/* Fonction qui affiche le texte du bouton */
 void afficher_text(bouton bouton, MLV_Font *police){
     MLV_draw_adapted_text_box_with_font(bouton.x, bouton.y, bouton.txt, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_WHITE, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
 }
 
 
+/* Fonction qui affiche le plateau de jeu */
 void affichage_mlv(plateau *p, int tour, int couleur){
     int i, j, x, y, l_p, h_p, radius, base, contour_x, contour_y, taille_contour, text_x, text_y;
     char *text_l[] = {"A", "B", "C", "D", "E", "F", "G", "H"};
@@ -50,7 +56,6 @@ void affichage_mlv(plateau *p, int tour, int couleur){
     MLV_Font *police;
 
     police = MLV_load_font("Letters for Learners.ttf", 30);
-
     MLV_clear_window(MLV_rgba(2, 9, 2, 255));
 
     /* taille plateau de jeu */
@@ -108,6 +113,7 @@ void affichage_mlv(plateau *p, int tour, int couleur){
         MLV_draw_adapted_text_box_with_font(text_x, text_y, text_l[i], police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_WHITE, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER, i + 1);
     }
 
+    /* affichage du score en direct */
     police = MLV_load_font("Letters for Learners.ttf", 50);
     sprintf(text, "Blanc : %d --------------- Noir : %d", score_blanc(p), score_noir(p));
     MLV_get_size_of_adapted_text_box_with_font(text, police, 10, &text_x, &text_y);
@@ -117,15 +123,7 @@ void affichage_mlv(plateau *p, int tour, int couleur){
     MLV_actualise_window();
 }
 
-void affiche_cellule_possible_mlv(char *message, int text_x, int text_y){
-    int text_w, text_h;
-
-    MLV_get_size_of_adapted_text_box(message, 10, &text_w, &text_h);
-
-    MLV_draw_adapted_text_box(text_x, text_y, message, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_WHITE, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
-
-}
-
+/* Fonction qui récupère les coordonnées d'un clic */
 cellule obtenir_coord(plateau *p){
     int x, y, l_p, h_p, base, s_x, s_y;
     cellule c;
@@ -149,24 +147,7 @@ cellule obtenir_coord(plateau *p){
     return c;
 }
 
-void afficher_coup_mlv(plateau *p){
-    int i, j, x, y;
-    char coup_p[50];
-    
-    x = 10;
-    y = LY / 3;
-    for(i = 0; i < p -> n; i++){
-        for(j = 0; j < p -> n; j++){
-            if(p -> mat[i][j] == COUP){
-                sprintf(coup_p, "\n%c%d ", j +'A', i + 1);
-                affiche_cellule_possible_mlv(coup_p, x, y);
-                x += 30;
-            }
-        }
-    }
-    MLV_actualise_window();
-}
-
+/* Fonction qui permet de choisir la couleur voulue */
 plateau *demande_premier_joueur(bouton bouton[], plateau *p){
     int text_width, text_height, x, i, pressed;
     char *nom_bouton[] = {"BLANC", "NOIR"};
