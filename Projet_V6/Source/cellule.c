@@ -3,6 +3,7 @@
 
 #include "cellule.h"
 
+/* si la l_cellule est vide alors renvoie 0*/
 int est_l_c_vide(l_cellule l_c){
     if(l_c.n == 0 && l_c.cel == NULL){
         return 1;
@@ -10,6 +11,7 @@ int est_l_c_vide(l_cellule l_c){
     return 0;
 }
 
+/* affiche toutes les cellules contenue dans l_cellule */
 void afficher_cel(l_cellule l_c){
     
     int i;
@@ -19,6 +21,7 @@ void afficher_cel(l_cellule l_c){
     printf("\n");
 }
 
+/* creer une l_cellule et la retourne */
 l_cellule creer_l_cellule(){ 
     l_cellule  l_c;
     l_c.n = 0;
@@ -26,11 +29,12 @@ l_cellule creer_l_cellule(){
     return l_c;
 }
 
+/* fait une reallocation ou alloue(si lc n'est pas encore en mémoire) mémoire sur la l_cellule et vérifie si on ajoute pas un doublon*/
 l_cellule ajouter_cellule(l_cellule l_c, int x, int y){
   cellule c;
   c.x = x;
   c.y = y;
-  
+  /* verifie si l'element existe deja dans l_c*/
   if(appartient_l_c(l_c, c)){
     printf("Attention doublons, liste inchangée\n");  
     return l_c;
@@ -59,7 +63,7 @@ l_cellule ajouter_cellule(l_cellule l_c, int x, int y){
 
 
 
-
+/* prend deux l_cellule et les concatene ( vérifie a ne pas ajouter de doublons) */
 l_cellule concat_l_cellule(l_cellule l_c1, l_cellule l_c2){
     int i, j, ajout;
 
@@ -88,16 +92,17 @@ l_cellule concat_l_cellule(l_cellule l_c1, l_cellule l_c2){
     
     return l_c1;
 }
-
+/* libère en mémoire la l_cellule */
 void liberer_l_cellule(l_cellule *l_c){
     free(l_c->cel);
     l_c->cel = NULL;
 }
 
+/* supprime un element cellule coup de la l_cellule*/
 l_cellule *supprimer_cellule(l_cellule *l_c, cellule coup){
 
     int i, supp = 0;
-    
+    /* on recher l'élement asupprimer */
     for(i = 0; i < l_c->n; i++){
         
         if(l_c->cel[i].x == coup.x && l_c->cel[i].y == coup.y){
@@ -122,7 +127,7 @@ l_cellule *supprimer_cellule(l_cellule *l_c, cellule coup){
     
     return l_c;
 }
-
+/* verifie et renvoie 1 si une cellule appartiens a une l_cellule sinon 0*/
 int appartient_l_c(l_cellule l_c, cellule c){
     int i;
     
