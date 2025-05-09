@@ -32,5 +32,8 @@ void afficher_coup(plateau *p);
 
 plateau *remise_a_zero(plateau *p);
 
+int score_blanc(plateau *p);
+
+int score_noir(plateau *p);
 
 #endif

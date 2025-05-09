@@ -25,7 +25,7 @@ void cree_bouton(bouton *bouton, char *message, int x, int y, MLV_Font *police);
 
 void afficher_text(bouton bouton, MLV_Font *police);
 
-void affichage_mlv(plateau *p);
+void affichage_mlv(plateau *p, int tour, int couleur);
 
 void affiche_cellule_possible_mlv(char *message, int text_x, int text_y);
 

@@ -4,8 +4,8 @@
 #include "plateau.h"
 
 
-int jeu_terminal(plateau *p, int prof);
+int jeu_terminal(plateau *p, int prof, int bot_vs_bot);
 
-void jeu_mlv(plateau *p, int prof);
+void jeu_mlv(plateau *p, int prof, int bot_vs_bot);
 
 #endif

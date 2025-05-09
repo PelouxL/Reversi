@@ -275,5 +275,30 @@ int couleur_gagnante(plateau *p){
     
 }
 
+int score_blanc(plateau *p){
+    int i, j, acc = 0;
+
+    for(i = 0; i < p->n; i++){
+        for(j = 0; j < p->n; j++){
+            if(p->mat[i][j] == BLANC){
+                acc++;
+            }
+        }
+    }
+    return acc;
+}
+
+int score_noir(plateau *p){
+    int i, j, acc = 0;
+
+    for(i = 0; i < p->n; i++){
+        for(j = 0; j < p->n; j++){
+            if(p->mat[i][j] == NOIR){
+                acc++;
+            }
+        }
+    }
+    return acc;
+}
                
 #endif

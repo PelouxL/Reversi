@@ -42,9 +42,11 @@ void afficher_text(bouton bouton, MLV_Font *police){
     MLV_draw_adapted_text_box_with_font(bouton.x, bouton.y, bouton.txt, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_WHITE, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);
 }
 
-void affichage_mlv(plateau *p){
+
+void affichage_mlv(plateau *p, int tour, int couleur){
     int i, j, x, y, l_p, h_p, radius, base, contour_x, contour_y, taille_contour, text_x, text_y;
     char *text_l[] = {"A", "B", "C", "D", "E", "F", "G", "H"};
+    char text[100];
     MLV_Font *police;
 
     police = MLV_load_font("Letters for Learners.ttf", 30);
@@ -80,12 +82,13 @@ void affichage_mlv(plateau *p){
             MLV_draw_rectangle(x, y, CASES, CASES, MLV_rgba(155, 155, 155, 255));
 
             /* affichage des pions */
-            if(p -> mat[i][j] == 1){
-                MLV_draw_filled_circle(x + CASES / 2, y + CASES / 2, radius, MLV_COLOR_BLACK);            }
-            else if(p -> mat[i][j] == 2){
+            if(p -> mat[i][j] == NOIR){
+                MLV_draw_filled_circle(x + CASES / 2, y + CASES / 2, radius, MLV_COLOR_BLACK);            
+            }
+            else if(p -> mat[i][j] == BLANC){
                 MLV_draw_filled_circle(x + CASES / 2, y + CASES / 2, radius, MLV_COLOR_WHITE);
             }
-            else if(p -> mat[i][j] == 10){
+            else if(p -> mat[i][j] == 10 && couleur == tour){ 
                 MLV_draw_filled_circle(x + CASES / 2, y + CASES / 2, radius / 2, MLV_rgba(155, 155, 155, 150));
             }                
         }
@@ -104,6 +107,12 @@ void affichage_mlv(plateau *p){
         text_y = h_p + base + TEXT;
         MLV_draw_adapted_text_box_with_font(text_x, text_y, text_l[i], police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_WHITE, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER, i + 1);
     }
+
+    police = MLV_load_font("Letters for Learners.ttf", 50);
+    sprintf(text, "Blanc : %d --------------- Noir : %d", score_blanc(p), score_noir(p));
+    MLV_get_size_of_adapted_text_box_with_font(text, police, 10, &text_x, &text_y);
+    MLV_draw_adapted_text_box_with_font((LX - text_x) / 2, 5, text, police, 10, MLV_ALPHA_TRANSPARENT, MLV_COLOR_WHITE, MLV_ALPHA_TRANSPARENT, MLV_TEXT_CENTER);   
+
     
     MLV_actualise_window();
 }
@@ -181,10 +190,10 @@ plateau *demande_premier_joueur(bouton bouton[], plateau *p){
     pressed = clic_bouton(bouton, 4);
     
     if(pressed == 0){
-        p -> j_couleur = NOIR;
+        p -> j_couleur = BLANC;
     }
     else if(pressed == 1){
-        p -> j_couleur = BLANC;
+        p -> j_couleur = NOIR;
     }
     p->ordi_couleur = couleur_adverse( p->j_couleur );
     
