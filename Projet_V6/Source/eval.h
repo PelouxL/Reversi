@@ -6,10 +6,6 @@
 
 #include "cellule.h"
 
-#define COIN 10
-#define BORD 5
-#define NEUTRE 1
-
 /* evalue la position d'un pion et renvoie sa valeur */
 int evaluation_position(int **tab_points, l_cellule bornes, cellule coup);
 
