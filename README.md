@@ -33,8 +33,6 @@ Options :
 
 --algo : Selection de l'algorythme voulu( --algo m | mini_max, Alpha_beta de base )( optionnel )
 
---help : Affiche le README sur le terminal ( optionnel )
-
 
 Fichiers :
 ----------
