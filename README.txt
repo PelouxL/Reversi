@@ -21,7 +21,7 @@ Utilisation :
 
 Pour lancer le programme, utilisez la commande suivante :
 
-	./Reversi --prof --mode --bot --mini_max
+	./Reversi --prof --mode --bot --min_max
 
 
 Options :
@@ -33,7 +33,7 @@ Options :
 
 --bot : Lance le programme avec deux ia, l'une contre l'autre (--bot )( optionnel )
 
---mini_max : Sélection de l'algorithme voulu( --mini_max | Alpha_beta de base )( optionnel )
+--min_max : Sélection de l'algorithme voulu( --min_max | Alpha_beta de base )( optionnel )
 
 
 Fichiers :
