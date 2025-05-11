@@ -22,13 +22,14 @@ utilisation:
 	@echo "--bot : si on veut bot contre bot ou par défaut jouer"
 	@echo "--min_max : Si on lance en min_max ou par défaut en alpha_beta"
 
-pdf: create
+pdf: create clean_pdf
 
 create:
-	pdflatex presentation/presentation.tex presentation.pdf
+	pdflatex Presentation/presentation.tex presentation.pdf
+	pdflatex Presentation/presentation.tex presentation.pdf
 
 clean_pdf:
 	rm -rf *.aux *.log *.out *.toc	*.snm *.nav
 
 clean :
-	rm -rf $(OBJET) *~ main 
+	rm -rf $(OBJET) *~ Reversi presentation.pdf
