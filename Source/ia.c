@@ -173,8 +173,11 @@ void calcul_points(arbre fils, arbre a, int **tab_points, plateau *p){
     poids += pos;
 
     /* points possibilités adverses */
-    acc = reste_coup(p);
-    acc *= 2;  
+    if(reste_coup(p) == 0){
+      acc = -500;
+    }else{
+      acc = reste_coup(p)* 2;
+    }
 
     poids += acc;
 
